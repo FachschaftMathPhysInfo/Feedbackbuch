@@ -9,8 +9,16 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "emoji-mart-vue-fast": "^7.0.5",
+    "katex": "^0.12.0",
+    "markdown-it": "^11.0.1",
+    "markdown-it-code-copy": "^0.1.0",
+    "markdown-it-highlightjs": "^3.3.0",
+    "markdown-it-texmath": "^0.8.0",
     "vue": "^2.6.11",
-    "vuetify": "^2.2.11"
+    "vue-moment": "^4.1.0",
+    "vuetify": "^2.2.11",
+    "vuetify-markdown-editor": "^3.2.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
