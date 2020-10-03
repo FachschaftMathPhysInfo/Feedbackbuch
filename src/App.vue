@@ -11,10 +11,8 @@
         ><v-btn v-on:click="yesterday()" icon
           ><v-icon>mdi-menu-left</v-icon>
         </v-btn>
-        {{
-          today 
-          
-        }}<v-btn v-on:click="tomorrow()" icon
+        {{ day | dateString }}
+        <v-btn v-on:click="tomorrow()" icon
           ><v-icon>mdi-menu-right</v-icon>
         </v-btn></span
       >
@@ -54,7 +52,6 @@
                 <div v-if="item == 'vorschau'">
                   <Editor
                     mode="viewer"
-                    ref="editor"
                     hint="Preview"
                     :emoji="true"
                     :image="false"
@@ -66,7 +63,6 @@
                 <div v-if="item == 'editor'">
                   <Editor
                     mode="editor"
-                    ref="editor"
                     hint="Hint: Use '$$ \LaTeX $$' to write math formulas. Place an empty line before your formula to end markdown code."
                     :emoji="true"
                     :image="false"
@@ -101,6 +97,7 @@
 import Comment from "./components/Comment";
 // import Day from "./components/Day";
 import { Editor } from "vuetify-markdown-editor";
+import moment from "moment";
 
 export default {
   name: "App",
@@ -113,7 +110,8 @@ export default {
 
   data() {
     return {
-      today: new Date(),
+      day: moment(new Date()),
+      today: moment(new Date()),
       daysOffsetCounter: 0,
       tab: null,
       items: ["editor", "vorschau"],
@@ -164,6 +162,9 @@ export default {
       },
     };
   },
+  computed: {
+    
+  },
   methods: {
     senden() {
       this.comments.push({
@@ -174,19 +175,28 @@ export default {
       });
     },
     yesterday() {
-      this.daysOffsetCounter = this.daysOffsetCounter - 1;
+      this.daysOffsetCounter = this.daysOffsetCounter -1;
+      this.day = moment(this.today).add(this.daysOffsetCounter,"days"); //.format('LL');
     },
     tomorrow() {
-      this.daysOffsetCounter = this.daysOffsetCounter + 1;
+      this.daysOffsetCounter = this.daysOffsetCounter +1;
+      this.day = moment(this.today).add(this.daysOffsetCounter,"days"); //.format('LL');
     },
+    
   },
   mounted() {
     // Access properties or methods using $refs
-    this.$refs.editor.focus();
+    // this.$refs.editor.focus();
     // this.$refs.editor.upload();
 
     // Dark theme
     // this.$vuetify.theme.dark = true;
   },
+  filters:{
+    dateString: function (now){
+      now.locale("de");  
+      return now.format('LL');
+    }
+  }
 };
 </script>

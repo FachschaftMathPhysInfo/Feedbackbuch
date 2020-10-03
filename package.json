@@ -15,8 +15,8 @@
     "markdown-it-code-copy": "^0.1.0",
     "markdown-it-highlightjs": "^3.3.0",
     "markdown-it-texmath": "^0.8.0",
+    "moment": "^2.29.0",
     "vue": "^2.6.11",
-    "vue-moment": "^4.1.0",
     "vuetify": "^2.2.11",
     "vuetify-markdown-editor": "^3.2.1"
   },
