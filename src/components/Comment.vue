@@ -10,7 +10,7 @@
           :image="false"
           :outline="false"
           :render-config="renderConfig"
-          v-model="comment.text"
+          v-model="comment.content"
         />
       <v-card-actions>
         <v-row justify="end">

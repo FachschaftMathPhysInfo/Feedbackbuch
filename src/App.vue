@@ -28,12 +28,15 @@
     </v-app-bar>
 
     <v-main>
-      <v-list v-bind:key="comment.id" v-for="comment in comments">
-        <Comment :comment="comment" />
-      </v-list>
+      <div v-if="!$apollo.loading">
+        <v-list v-bind:key="comment.id" v-for="comment in comments">
+          <Comment :comment="comment" />
+        </v-list>
+      </div>
+      <div v-if="$apollo.loading">loading ....</div>
 
       <v-expansion-panels
-        style="position: absolute; bottom: 10px; width: 100vw;"
+        style="position: absolute; bottom: 10px; width: 100vw"
       >
         <v-expansion-panel>
           <v-expansion-panel-header expand-icon="mdi-menu-up">
@@ -47,7 +50,7 @@
               </v-tab>
             </v-tabs>
 
-            <v-tabs-items v-model="tab" style="min-height: 275px;">
+            <v-tabs-items v-model="tab" style="min-height: 275px">
               <v-tab-item v-for="item in items" :key="item">
                 <div v-if="item == 'vorschau'">
                   <Editor
@@ -80,7 +83,7 @@
                 text
                 depressed
                 color="primary"
-                style="margin-right:10px"
+                style="margin-right: 10px"
               >
                 Senden
                 <v-icon class="ml-2">mdi-send</v-icon>
@@ -98,6 +101,18 @@ import Comment from "./components/Comment";
 // import Day from "./components/Day";
 import { Editor } from "vuetify-markdown-editor";
 import moment from "moment";
+import gql from "graphql-tag";
+
+const COMMENTS_QUERY = gql`
+  query {
+    comments {
+      timestamp
+      content
+      id
+      upvotes
+    }
+  }
+`;
 
 export default {
   name: "App",
@@ -162,9 +177,7 @@ export default {
       },
     };
   },
-  computed: {
-    
-  },
+  computed: {},
   methods: {
     senden() {
       this.comments.push({
@@ -173,30 +186,57 @@ export default {
         upvotes: 0,
         id: 0,
       });
+      this.$apollo.mutate({
+        mutation: gql`
+          mutation($content: String!) {
+            createComment(content: $content) {
+              id
+              content
+              upvotes
+              timestamp
+            }
+          }
+        `,
+        variables: {
+          content: this.text,
+        },
+        update: (store, { data: { createComment } }) => {
+          const data = store.readQuery({ query: COMMENTS_QUERY });
+          data.comments.push(createComment);
+          store.writeQuery({ query: COMMENTS_QUERY, data });
+        },
+      });
     },
     yesterday() {
-      this.daysOffsetCounter = this.daysOffsetCounter -1;
-      this.day = moment(this.today).add(this.daysOffsetCounter,"days"); //.format('LL');
+      this.daysOffsetCounter = this.daysOffsetCounter - 1;
+      this.day = moment(this.today).add(this.daysOffsetCounter, "days"); //.format('LL');
     },
     tomorrow() {
-      this.daysOffsetCounter = this.daysOffsetCounter +1;
-      this.day = moment(this.today).add(this.daysOffsetCounter,"days"); //.format('LL');
+      this.daysOffsetCounter = this.daysOffsetCounter + 1;
+      this.day = moment(this.today).add(this.daysOffsetCounter, "days"); //.format('LL');
     },
-    
   },
+
+  apollo: {
+    comments: {
+      query: COMMENTS_QUERY,
+      update: (data) => data.comments,
+    },
+    // : gql`query {comments {timestamp, content, id, upvotes}}`
+  },
+
   mounted() {
     // Access properties or methods using $refs
     // this.$refs.editor.focus();
     // this.$refs.editor.upload();
-
     // Dark theme
     // this.$vuetify.theme.dark = true;
   },
-  filters:{
-    dateString: function (now){
-      now.locale("de");  
-      return now.format('LL');
-    }
-  }
+  filters: {
+    dateString: function (now) {
+      now.locale("de");
+      return now.format("LL");
+    },
+  },
 };
 </script>
