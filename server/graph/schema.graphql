@@ -1,0 +1,22 @@
+scalar Time
+
+type Comment {
+    id: Int!
+    content: String!
+    upvotes: Int!
+    timestamp: Time!
+    references: Int
+}
+
+type Query {
+    comments: [Comment]
+}
+
+type Mutation {
+    createComment(content: String!, references: Int):Comment!
+    upvoteComment(comment: Int!):Comment!
+}
+
+type Subscription {
+    commentAdded: Comment!
+}
