@@ -13,14 +13,17 @@
         v-model="comment.content"
       />
       <v-card-actions>
-        <v-row justify="end">
-          <v-btn text><v-icon>mdi-reply</v-icon> Reply</v-btn>
+        <v-row justify="space-between" style="padding: 0px 12px;">
+          <span><i>Kommentar #{{comment.id}}</i></span>
+          <span>
+          <v-btn text v-on:click="reply"><v-icon>mdi-reply</v-icon> Reply</v-btn>
           <v-btn text v-on:click="upvote">
             <v-icon class="mr-1" :color="upvoted ? 'green' : 'gray'"
               >mdi-thumb-up</v-icon
             >
             Upvote {{ this.comment.upvotes }}</v-btn
           >
+          </span>
         </v-row>
       </v-card-actions>
     </v-card>
@@ -107,7 +110,10 @@ export default {
         })
         .then(() => (this.upvoted = true));
     },
-  },
+    reply() {
+      this.$emit('reply',this.comment.id);
+    }
+  }
 };
 </script>
 

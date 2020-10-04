@@ -30,7 +30,7 @@
     <v-main>
       <div v-if="!$apollo.loading">
         <v-list v-bind:key="comment.id" v-for="comment in comments">
-          <Comment :comment="comment" />
+          <Comment :comment="comment" @reply="reply"/>
         </v-list>
       </div>
       <div v-if="$apollo.loading">loading ....</div>
@@ -77,7 +77,17 @@
                 </div>
               </v-tab-item>
             </v-tabs-items>
-            <v-row justify="end">
+            <v-row justify="space-between">
+              <span>
+              <v-chip
+                v-if="currentReference"
+                class="ma-2"
+                close
+                @click:close="currentReference = null"
+              >
+                Bezieht sich auf Kommentar {{ this.currentReference }}
+              </v-chip>
+              </span>
               <v-btn
                 v-on:click="senden"
                 text
@@ -125,6 +135,7 @@ export default {
 
   data() {
     return {
+      currentReference: null,
       day: moment(new Date()),
       today: moment(new Date()),
       daysOffsetCounter: 0,
@@ -203,6 +214,9 @@ export default {
     tomorrow() {
       this.daysOffsetCounter = this.daysOffsetCounter + 1;
       this.day = moment(this.today).add(this.daysOffsetCounter, "days"); //.format('LL');
+    },
+    reply(commentid) {
+      this.currentReference = commentid;
     },
   },
 
