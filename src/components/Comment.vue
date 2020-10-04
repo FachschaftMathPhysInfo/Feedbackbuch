@@ -2,6 +2,7 @@
   <v-list-item>
     <v-card class="mx-max" style="width: 100vw; margin: 12px">
       <!-- <v-card-text class="headline font-weight-bold">{{comment.text}}</v-card-text> -->
+     <i style="padding: 12px 12px;">Bezieht sich auf Kommentar <a v-if="comment.references" href="#0">#0</a></i>
       <Editor
         mode="viewer"
         ref="editor"
