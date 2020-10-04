@@ -1,9 +1,9 @@
 # build stage
 FROM node:lts-alpine as feedbackbuch-frontend-build-stage
 WORKDIR /app
-COPY package*.json ./
+COPY package*.json *.config.js ./
 RUN npm install
-COPY . .
+COPY ./src ./src
 RUN npm run build
 
 # production stage

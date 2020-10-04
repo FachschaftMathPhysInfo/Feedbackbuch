@@ -4,6 +4,16 @@ version: '3.0'
 services:
   feedbackbuch-frontend:
     build: .
-    image: "feedbackbuch-frontend"
+    image: "feedbackbuch-frontend:latest"
     ports:
       - "127.0.0.1:8080:80"
+    depends_on:
+      - feedbackbuch-backend
+
+  feedbackbuch-backend:
+    build: server
+    image: "feedbackbuch-backend:latest"
+    ports:
+      - "127.0.0.1:8081:8081"
+    environment:
+      PORT: 8081
