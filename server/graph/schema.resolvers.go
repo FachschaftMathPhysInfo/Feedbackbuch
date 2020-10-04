@@ -5,6 +5,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/TomTomRixRix/Feedbackbuch/server/graph/generated"
@@ -40,11 +41,12 @@ func (r *mutationResolver) CreateComment(ctx context.Context, content string, re
 func (r *mutationResolver) UpvoteComment(ctx context.Context, comment int) (*model.Comment, error) {
 	upvotedComment := model.Comment{}
 	r.DB.Where(&model.Comment{ID: comment}).First(&upvotedComment)
-	upvotedComment.Upvotes++
-
-	r.DB.Save(&upvotedComment)
-
-	return &upvotedComment, nil
+	if upvotedComment.ID == comment {
+		upvotedComment.Upvotes++
+		r.DB.Save(&upvotedComment)
+		return &upvotedComment, nil
+	}
+	return nil, fmt.Errorf("The ID of the upvoted comment is invalid")
 }
 
 func (r *queryResolver) Comments(ctx context.Context) ([]*model.Comment, error) {
