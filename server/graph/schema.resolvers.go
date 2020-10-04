@@ -23,7 +23,7 @@ func (r *mutationResolver) CreateComment(ctx context.Context, content string, re
 		r.mu.Lock()
 		toBeDeleted := make([]int, 0)
 		for i, c := range r.ToBeNotified {
-			if c.Timestamp.Before(time.Now().Add(-20 * time.Second)) {
+			if c.Timestamp.Before(time.Now().Add(-20 * time.Minute)) {
 				toBeDeleted = append(toBeDeleted, i)
 			}
 			c.C <- &comment

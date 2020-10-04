@@ -180,12 +180,6 @@ export default {
   computed: {},
   methods: {
     senden() {
-      this.comments.push({
-        text: this.text,
-        timestamp: new Date(),
-        upvotes: 0,
-        id: 0,
-      });
       this.$apollo.mutate({
         mutation: gql`
           mutation($content: String!) {
@@ -199,11 +193,6 @@ export default {
         `,
         variables: {
           content: this.text,
-        },
-        update: (store, { data: { createComment } }) => {
-          const data = store.readQuery({ query: COMMENTS_QUERY });
-          data.comments.push(createComment);
-          store.writeQuery({ query: COMMENTS_QUERY, data });
         },
       });
     },
@@ -221,8 +210,28 @@ export default {
     comments: {
       query: COMMENTS_QUERY,
       update: (data) => data.comments,
+      subscribeToMore: {
+        document: gql`
+          subscription name {
+            commentAdded {
+              id
+              content
+              timestamp
+              upvotes
+            }
+          }
+        `,
+        updateQuery: (previousResult, { subscriptionData }) => {
+          if (previousResult == null) {
+            return {
+              comments: [subscriptionData.data.commentAdded],
+            };
+          } else {
+            return {comments: [... previousResult.comments, subscriptionData.data.commentAdded]}
+          }
+        },
+      },
     },
-    // : gql`query {comments {timestamp, content, id, upvotes}}`
   },
 
   mounted() {
