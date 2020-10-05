@@ -18,6 +18,9 @@
       >
 
       <v-spacer></v-spacer>
+      <v-btn icon v-on:click="$vuetify.theme.dark = !$vuetify.theme.dark;">
+        <v-icon>mdi-theme-light-dark</v-icon>
+      </v-btn>
       <v-btn
         href="https://github.com/TomTomRixRix/Feedbackbuch"
         target="_blank"
@@ -27,7 +30,7 @@
       </v-btn>
     </v-app-bar>
 
-    <v-main id="main">
+    <v-main>
       <div v-if="!$apollo.loading">
         <v-list color="secondary" v-bind:key="comment.id" v-for="comment in comments">
           <Comment :comment="comment" @reply="reply"/>
@@ -245,7 +248,12 @@ export default {
               comments: [subscriptionData.data.commentAdded],
             };
           } else {
-            return {comments: [... previousResult.comments, subscriptionData.data.commentAdded]}
+            return {
+              comments: [
+                ...previousResult.comments,
+                subscriptionData.data.commentAdded,
+              ],
+            };
           }
         },
       },
@@ -260,16 +268,10 @@ export default {
     // this.$vuetify.theme.dark = true;
   },
   filters: {
-    dateString: function (now) {
+    dateString: function(now) {
       now.locale("de");
       return now.format("LL");
     },
   },
 };
 </script>
-
-<style scoped>
-#main {
- background-color: red;
-}
-</style>

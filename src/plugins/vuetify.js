@@ -12,6 +12,10 @@ export default new Vuetify({
             accent: '#590d08',
             error: '#b71c1c',
           },
+          dark: {
+            primary: "#590d08",
+          },
         },
+        
       },
 });
