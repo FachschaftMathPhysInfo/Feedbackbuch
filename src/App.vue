@@ -120,6 +120,7 @@ const COMMENTS_QUERY = gql`
       content
       id
       upvotes
+      references
     }
   }
 `;
@@ -193,17 +194,19 @@ export default {
     senden() {
       this.$apollo.mutate({
         mutation: gql`
-          mutation($content: String!) {
-            createComment(content: $content) {
+          mutation($content: String!, $references: Int) {
+            createComment(content: $content, references: $references) {
               id
               content
               upvotes
               timestamp
+              references
             }
           }
         `,
         variables: {
           content: this.text,
+          references: this.currentReference,
         },
       });
     },
@@ -232,6 +235,7 @@ export default {
               content
               timestamp
               upvotes
+              references
             }
           }
         `,
