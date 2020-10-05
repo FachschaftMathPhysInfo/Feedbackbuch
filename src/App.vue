@@ -48,7 +48,7 @@
     </v-app-bar>
 
     <v-main>
-      <div v-if="!$apollo.loading">
+      <div v-if="!$apollo.loading" style="padding-bottom: 64px;">
         <v-list color="secondary" v-bind:key="comment.id" v-for="comment in comments">
           <Comment :comment="comment" @reply="reply"/>
         </v-list>
@@ -56,40 +56,55 @@
       <div v-if="$apollo.loading">loading ....</div>
 
       <v-expansion-panels
-        style="position: absolute; bottom: 10px; width: 100vw"
+        style="position: fixed; bottom: 0px; width: 100vw"
       >
         <v-expansion-panel>
-          <v-expansion-panel-header expand-icon="mdi-menu-up">
-            <h3>Neues Feedback hinzufügen</h3>
+          <v-expansion-panel-header color="primary">
+            <span class="text-h6 secondary--text">Neues Feedback hinzufügen</span>
+            <template v-slot:actions>
+              <v-icon color="secondary">
+                mdi-menu-up
+              </v-icon>
+            </template>
           </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-tabs v-model="tab" right>
-              <v-tabs-slider></v-tabs-slider>
-              <v-tab v-for="item in items" :key="item">
+          <v-expansion-panel-content color="secondary">
+            <v-tabs
+              v-model="tab"
+              right
+              background-color="secondary"
+              color="primary"
+            >
+              <v-tabs-slider color="primary"></v-tabs-slider>
+              <v-tab v-for="item in items" :key="item" color="primary">
                 {{ item }}
               </v-tab>
             </v-tabs>
 
-            <v-tabs-items v-model="tab" style="min-height: 275px">
+            <v-tabs-items
+              v-model="tab"
+              style="min-height: 275px; background-color:transparent;"
+            >
               <v-tab-item v-for="item in items" :key="item">
-                <div v-if="item == 'vorschau'">
+                <div v-if="item == 'vorschau'" style="padding: 16px">
+                  <v-card >
                   <Editor
                     mode="viewer"
                     hint="Preview"
                     :emoji="true"
                     :image="false"
-                    :outline="false"
+                    :outline="true"
                     :render-config="renderConfig"
                     v-model="text"
                   />
+                  </v-card>
                 </div>
                 <div v-if="item == 'editor'">
                   <Editor
+                    :outline="false"
                     mode="editor"
                     hint="Hint: Use '$$ \LaTeX $$' to write math formulas. Place an empty line before your formula to end markdown code."
                     :emoji="true"
                     :image="false"
-                    :outline="false"
                     :render-config="renderConfig"
                     v-model="text"
                     counter="31415"
@@ -292,3 +307,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.v-tab {
+  color: rgba(0, 0, 0, 0.6) !important;
+}
+</style>
