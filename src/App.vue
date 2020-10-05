@@ -2,20 +2,33 @@
   <v-app>
     <v-app-bar app color="primary" dark>
       <div class="d-flex align-center">
-        <v-toolbar-title><v-icon class="mr-2">mdi-comment-quote</v-icon>Feedbackbuch</v-toolbar-title>
+        <v-toolbar-title
+          ><v-icon class="mr-2">mdi-comment-quote</v-icon
+          >Feedbackbuch</v-toolbar-title
+        >
       </div>
 
       <v-spacer></v-spacer>
 
-      <span
-        ><v-btn v-on:click="yesterday()" icon
-          ><v-icon>mdi-menu-left</v-icon>
-        </v-btn>
+      <span>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn v-bind="attrs" v-on="on" v-on:click="yesterday()" icon
+              ><v-icon>mdi-menu-left</v-icon>
+            </v-btn>
+          </template>
+          <span>zu vorherigem Tag wechseln</span>
+        </v-tooltip>
         {{ day | dateString }}
-        <v-btn v-on:click="tomorrow()" icon
-          ><v-icon>mdi-menu-right</v-icon>
-        </v-btn></span
-      >
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn v-bind="attrs" v-on="on" v-on:click="tomorrow()" icon
+              ><v-icon>mdi-menu-right</v-icon>
+            </v-btn>
+          </template>
+          <span>zu nächstem Tag wechseln</span>
+        </v-tooltip>
+      </span>
 
       <v-spacer></v-spacer>
       <v-tooltip bottom>
@@ -55,12 +68,12 @@
       </div>
       <div v-if="$apollo.loading">loading ....</div>
 
-      <v-expansion-panels
-        style="position: fixed; bottom: 0px; width: 100vw"
-      >
+      <v-expansion-panels style="position: fixed; bottom: 0px; width: 100vw">
         <v-expansion-panel>
           <v-expansion-panel-header color="primary">
-            <span class="text-h6 secondary--text">Neues Feedback hinzufügen</span>
+            <span class="text-h6 secondary--text"
+              >Neues Feedback hinzufügen</span
+            >
             <template v-slot:actions>
               <v-icon color="secondary">
                 mdi-menu-up
@@ -86,16 +99,16 @@
             >
               <v-tab-item v-for="item in items" :key="item">
                 <div v-if="item == 'vorschau'" style="padding: 16px">
-                  <v-card >
-                  <Editor
-                    mode="viewer"
-                    hint="Preview"
-                    :emoji="true"
-                    :image="false"
-                    :outline="true"
-                    :render-config="renderConfig"
-                    v-model="text"
-                  />
+                  <v-card>
+                    <Editor
+                      mode="viewer"
+                      hint="Preview"
+                      :emoji="true"
+                      :image="false"
+                      :outline="true"
+                      :render-config="renderConfig"
+                      v-model="text"
+                    />
                   </v-card>
                 </div>
                 <div v-if="item == 'editor'">
