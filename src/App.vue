@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar app color="primary" dark>
       <div class="d-flex align-center">
-        <v-toolbar-title>Feedbackbuch</v-toolbar-title>
+        <v-toolbar-title><v-icon class="mr-2">mdi-comment-quote</v-icon>Feedbackbuch</v-toolbar-title>
       </div>
 
       <v-spacer></v-spacer>
