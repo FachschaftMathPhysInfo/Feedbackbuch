@@ -18,16 +18,33 @@
       >
 
       <v-spacer></v-spacer>
-      <v-btn icon v-on:click="$vuetify.theme.dark = !$vuetify.theme.dark;">
-        <v-icon>mdi-theme-light-dark</v-icon>
-      </v-btn>
-      <v-btn
-        href="https://github.com/TomTomRixRix/Feedbackbuch"
-        target="_blank"
-        text
-      >
-        <v-icon>mdi-github</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            v-on="on"
+            text
+            v-on:click="$vuetify.theme.dark = !$vuetify.theme.dark"
+          >
+            <v-icon>mdi-theme-light-dark</v-icon>
+          </v-btn>
+        </template>
+        <span>Darkmode umschalten</span>
+      </v-tooltip>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            v-on="on"
+            href="https://github.com/TomTomRixRix/Feedbackbuch"
+            target="_blank"
+            text
+          >
+            <v-icon>mdi-github</v-icon>
+          </v-btn>
+        </template>
+        <span>Projekt auf GitHub</span>
+      </v-tooltip>
     </v-app-bar>
 
     <v-main>
