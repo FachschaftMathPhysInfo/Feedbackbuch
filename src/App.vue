@@ -27,9 +27,9 @@
       </v-btn>
     </v-app-bar>
 
-    <v-main>
+    <v-main id="main">
       <div v-if="!$apollo.loading">
-        <v-list v-bind:key="comment.id" v-for="comment in comments">
+        <v-list color="secondary" v-bind:key="comment.id" v-for="comment in comments">
           <Comment :comment="comment" @reply="reply"/>
         </v-list>
       </div>
@@ -267,3 +267,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+#main {
+ background-color: red;
+}
+</style>
