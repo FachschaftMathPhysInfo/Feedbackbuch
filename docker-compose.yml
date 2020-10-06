@@ -3,7 +3,7 @@ version: '3.0'
 
 services:
   feedbackbuch-frontend:
-    build: .
+    build: frontend
     image: "feedbackbuch-frontend:latest"
     ports:
       - "127.0.0.1:8080:80"
