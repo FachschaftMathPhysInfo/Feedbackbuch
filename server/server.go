@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -64,6 +65,11 @@ func main() {
 	srv.AddTransport(transport.MultipartForm{})
 
 	router.Handle("/query", srv)
+	fmt.Print(
+		"==========================================\n",
+		"Started the backend listening on Port "+port+"\n",
+		"==========================================\n",
+	)
 	err := http.ListenAndServe(":"+port, router)
 	if err != nil {
 		panic(err)
