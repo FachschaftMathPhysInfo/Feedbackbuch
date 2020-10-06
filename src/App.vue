@@ -2,74 +2,121 @@
   <v-app>
     <v-app-bar app color="primary" dark>
       <div class="d-flex align-center">
-        <v-toolbar-title>Feedbackbuch</v-toolbar-title>
+        <v-toolbar-title
+          ><v-icon class="mr-2">mdi-comment-quote</v-icon
+          >Feedbackbuch</v-toolbar-title
+        >
       </div>
 
       <v-spacer></v-spacer>
 
-      <span
-        ><v-btn v-on:click="yesterday()" icon
-          ><v-icon>mdi-menu-left</v-icon>
-        </v-btn>
+      <span>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn v-bind="attrs" v-on="on" v-on:click="yesterday()" icon
+              ><v-icon>mdi-menu-left</v-icon>
+            </v-btn>
+          </template>
+          <span>zu vorherigem Tag wechseln</span>
+        </v-tooltip>
         {{ day | dateString }}
-        <v-btn v-on:click="tomorrow()" icon
-          ><v-icon>mdi-menu-right</v-icon>
-        </v-btn></span
-      >
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn v-bind="attrs" v-on="on" v-on:click="tomorrow()" icon
+              ><v-icon>mdi-menu-right</v-icon>
+            </v-btn>
+          </template>
+          <span>zu nächstem Tag wechseln</span>
+        </v-tooltip>
+      </span>
 
       <v-spacer></v-spacer>
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <v-icon>mdi-github</v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            v-on="on"
+            text
+            v-on:click="$vuetify.theme.dark = !$vuetify.theme.dark"
+          >
+            <v-icon>mdi-theme-light-dark</v-icon>
+          </v-btn>
+        </template>
+        <span>Darkmode umschalten</span>
+      </v-tooltip>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            v-on="on"
+            href="https://github.com/TomTomRixRix/Feedbackbuch"
+            target="_blank"
+            text
+          >
+            <v-icon>mdi-github</v-icon>
+          </v-btn>
+        </template>
+        <span>Projekt auf GitHub</span>
+      </v-tooltip>
     </v-app-bar>
 
     <v-main>
-      <div v-if="!$apollo.loading">
-        <v-list v-bind:key="comment.id" v-for="comment in comments">
+      <div v-if="!$apollo.loading" style="padding-bottom: 64px;">
+        <v-list color="secondary" v-bind:key="comment.id" v-for="comment in comments">
           <Comment :comment="comment" @reply="reply"/>
         </v-list>
       </div>
       <div v-if="$apollo.loading">loading ....</div>
 
-      <v-expansion-panels
-        style="position: absolute; bottom: 10px; width: 100vw"
-      >
+      <v-expansion-panels style="position: fixed; bottom: 0px; width: 100vw">
         <v-expansion-panel>
-          <v-expansion-panel-header expand-icon="mdi-menu-up">
-            <h3>Neues Feedback hinzufügen</h3>
+          <v-expansion-panel-header color="primary">
+            <span class="text-h6" style="color: #f4f1ea;"
+              >Neues Feedback hinzufügen</span
+            >
+            <template v-slot:actions>
+              <v-icon style="color: #f4f1ea;">
+                mdi-menu-up
+              </v-icon>
+            </template>
           </v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-tabs v-model="tab" right>
-              <v-tabs-slider></v-tabs-slider>
-              <v-tab v-for="item in items" :key="item">
+          <v-expansion-panel-content color="secondary">
+            <v-tabs 
+              v-model="tab"
+              right
+              background-color="secondary"
+            >
+              <v-tabs-slider color="primary"></v-tabs-slider>
+              <v-tab :style="$vuetify.theme.dark ? 'color:white;' : 'color:rgba(0,0,0,0.54);'" v-for="item in items" :key="item">
                 {{ item }}
               </v-tab>
             </v-tabs>
 
-            <v-tabs-items v-model="tab" style="min-height: 275px">
+            <v-tabs-items
+              v-model="tab"
+              style="min-height: 275px; background-color:transparent;"
+            >
               <v-tab-item v-for="item in items" :key="item">
-                <div v-if="item == 'vorschau'">
-                  <Editor
-                    mode="viewer"
-                    hint="Preview"
-                    :emoji="true"
-                    :image="false"
-                    :outline="false"
-                    :render-config="renderConfig"
-                    v-model="text"
-                  />
+                <div v-if="item == 'vorschau'" style="padding: 16px">
+                  <v-card>
+                    <Editor
+                      mode="viewer"
+                      hint="Preview"
+                      :emoji="true"
+                      :image="false"
+                      :outline="true"
+                      :render-config="renderConfig"
+                      v-model="text"
+                    />
+                  </v-card>
                 </div>
                 <div v-if="item == 'editor'">
                   <Editor
+                    :outline="false"
                     mode="editor"
                     hint="Hint: Use '$$ \LaTeX $$' to write math formulas. Place an empty line before your formula to end markdown code."
                     :emoji="true"
                     :image="false"
-                    :outline="false"
                     :render-config="renderConfig"
                     v-model="text"
                     counter="31415"
@@ -92,7 +139,7 @@
                 v-on:click="senden"
                 text
                 depressed
-                color="primary"
+                :color="$vuetify.theme.dark ? 'white' : 'primary'"
                 style="margin-right: 10px"
               >
                 Senden
@@ -245,7 +292,12 @@ export default {
               comments: [subscriptionData.data.commentAdded],
             };
           } else {
-            return {comments: [... previousResult.comments, subscriptionData.data.commentAdded]}
+            return {
+              comments: [
+                ...previousResult.comments,
+                subscriptionData.data.commentAdded,
+              ],
+            };
           }
         },
       },
@@ -260,10 +312,13 @@ export default {
     // this.$vuetify.theme.dark = true;
   },
   filters: {
-    dateString: function (now) {
+    dateString: function(now) {
       now.locale("de");
       return now.format("LL");
     },
   },
 };
 </script>
+
+<style scoped>
+</style>
