@@ -1,7 +1,7 @@
 <template>
   <v-list-item>
     <v-card class="mx-max" style="width: 100vw; margin: 12px">
-      <!-- <v-card-text class="headline font-weight-bold">{{comment.text}}</v-card-text> -->
+     <i v-if="comment.references" style="padding: 12px 12px;">Bezieht sich auf Kommentar <a :href="'#'+comment.references">#{{comment.references}}</a></i>
       <Editor
         mode="viewer"
         ref="editor"
@@ -13,14 +13,17 @@
         v-model="comment.content"
       />
       <v-card-actions>
-        <v-row justify="end">
-          <v-btn text><v-icon>mdi-reply</v-icon> Reply</v-btn>
+        <v-row justify="space-between" style="padding: 0px 12px;">
+          <span><i>Kommentar #{{comment.id}}</i></span>
+          <span>
+          <v-btn text v-on:click="reply"><v-icon>mdi-reply</v-icon> Reply</v-btn>
           <v-btn text v-on:click="upvote">
             <v-icon class="mr-1" :color="upvoted ? 'green' : 'gray'"
               >mdi-thumb-up</v-icon
             >
             Upvote {{ this.comment.upvotes }}</v-btn
           >
+          </span>
         </v-row>
       </v-card-actions>
     </v-card>
@@ -40,7 +43,6 @@ export default {
     comment: Object,
   },
   data: () => ({
-    text: "Tom",
     renderConfig: {
       // Mermaid config
       mermaid: {
@@ -98,6 +100,7 @@ export default {
                 content
                 upvotes
                 timestamp
+                references
               }
             }
           `,
@@ -107,7 +110,10 @@ export default {
         })
         .then(() => (this.upvoted = true));
     },
-  },
+    reply() {
+      this.$emit('reply',this.comment.id);
+    }
+  }
 };
 </script>
 
