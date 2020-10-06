@@ -71,11 +71,11 @@
       <v-expansion-panels style="position: fixed; bottom: 0px; width: 100vw">
         <v-expansion-panel>
           <v-expansion-panel-header color="primary">
-            <span class="text-h6 secondary--text"
+            <span class="text-h6" style="color: #f4f1ea;"
               >Neues Feedback hinzufügen</span
             >
             <template v-slot:actions>
-              <v-icon color="secondary">
+              <v-icon style="color: #f4f1ea;">
                 mdi-menu-up
               </v-icon>
             </template>
