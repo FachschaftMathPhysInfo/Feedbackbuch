@@ -81,14 +81,13 @@
             </template>
           </v-expansion-panel-header>
           <v-expansion-panel-content color="secondary">
-            <v-tabs
+            <v-tabs 
               v-model="tab"
               right
               background-color="secondary"
-              color="primary"
             >
               <v-tabs-slider color="primary"></v-tabs-slider>
-              <v-tab v-for="item in items" :key="item" color="primary">
+              <v-tab :style="$vuetify.theme.dark ? 'color:white;' : 'color:rgba(0,0,0,0.54);'" v-for="item in items" :key="item">
                 {{ item }}
               </v-tab>
             </v-tabs>
@@ -140,7 +139,7 @@
                 v-on:click="senden"
                 text
                 depressed
-                color="primary"
+                :color="$vuetify.theme.dark ? 'white' : 'primary'"
                 style="margin-right: 10px"
               >
                 Senden
@@ -322,7 +321,4 @@ export default {
 </script>
 
 <style scoped>
-.v-tab {
-  color: rgba(0, 0, 0, 0.6) !important;
-}
 </style>
