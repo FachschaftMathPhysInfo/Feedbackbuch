@@ -1,7 +1,12 @@
 <template>
   <v-list-item>
     <v-card class="mx-max" style="width: 100vw; margin: 12px">
-     <i v-if="comment.references" style="padding: 12px 12px;">Bezieht sich auf <a :href="'#'+comment.references">Kommentar #{{comment.references}}</a></i>
+      <i v-if="comment.references" style="padding: 12px 12px;"
+        >Bezieht sich auf
+        <a :href="'#' + comment.references"
+          >Kommentar #{{ comment.references }}</a
+        ></i
+      >
       <Editor
         mode="viewer"
         ref="editor"
@@ -14,15 +19,22 @@
       />
       <v-card-actions>
         <v-row justify="space-between" style="padding: 0px 12px;">
-          <span><i>Kommentar #{{comment.id}}</i></span>
-          <span>
-          <v-btn text v-on:click="reply"><v-icon>mdi-reply</v-icon> Reply</v-btn>
-          <v-btn text v-on:click="upvote">
-            <v-icon class="mr-1" :color="upvoted ? 'green' : 'gray'"
-              >mdi-thumb-up</v-icon
-            >
-            Upvote {{ this.comment.upvotes }}</v-btn
+          <span
+            ><i>Kommentar #{{ comment.id }}</i></span
           >
+          <span>
+            <v-btn text v-on:click="deleteComment"
+              ><v-icon>mdi-delete</v-icon> Delete</v-btn
+            >
+            <v-btn text v-on:click="reply"
+              ><v-icon>mdi-reply</v-icon> Reply</v-btn
+            >
+            <v-btn text v-on:click="upvote">
+              <v-icon class="mr-1" :color="upvoted ? 'green' : 'gray'"
+                >mdi-thumb-up</v-icon
+              >
+              Upvote {{ this.comment.upvotes }}</v-btn
+            >
           </span>
         </v-row>
       </v-card-actions>
@@ -111,9 +123,30 @@ export default {
         .then(() => (this.upvoted = true));
     },
     reply() {
-      this.$emit('reply',this.comment.id);
-    }
-  }
+      this.$emit("reply", this.comment.id);
+    },
+    deleteComment() {
+      console.log(this.comment.id);
+      //TODO:delete comment on server
+      this.$apollo
+        .mutate({
+          mutation: gql`
+            mutation($id: Int!) {
+              deleteComment(comment: $id) {
+                id
+                content
+                upvotes
+                timestamp
+                references
+              }
+            }
+          `,
+          variables: {
+            id: this.comment.id,
+          },
+        });
+    },
+  },
 };
 </script>
 
