@@ -49,13 +49,42 @@ func (r *mutationResolver) UpvoteComment(ctx context.Context, comment int) (*mod
 	return nil, fmt.Errorf("The ID of the upvoted comment is invalid")
 }
 
+func (r *mutationResolver) DeleteComment(ctx context.Context, comment int) (*model.Comment, error) {
+	deletedComment := model.Comment{}
+	r.DB.Where(&model.Comment{ID: comment}).First(&deletedComment)
+
+	if deletedComment.ID == comment {
+		r.DB.Delete(&deletedComment)
+
+		go func() {
+			r.mu.Lock()
+			toBeDeleted := make([]int, 0)
+			for i, c := range r.ToBeNotified {
+				if c.Timestamp.Before(time.Now().Add(-20 * time.Minute)) {
+					toBeDeleted = append(toBeDeleted, i)
+				}
+				c.C <- &deletedComment
+			}
+			for i := range toBeDeleted {
+				index := len(toBeDeleted) - 1 + i
+				r.ToBeNotified = append(r.ToBeNotified[:index], r.ToBeNotified[index+1:]...)
+			}
+			r.mu.Unlock()
+		}()
+
+		return &deletedComment, nil
+	}
+
+	return nil, fmt.Errorf("The ID of the deleted comment is invalid")
+}
+
 func (r *queryResolver) Comments(ctx context.Context) ([]*model.Comment, error) {
 	var results []*model.Comment
 	r.DB.Find(&results)
 	return results, nil
 }
 
-func (r *subscriptionResolver) CommentAdded(ctx context.Context) (<-chan *model.Comment, error) {
+func (r *subscriptionResolver) CommentChanged(ctx context.Context) (<-chan *model.Comment, error) {
 	event := Notification{C: make(chan *model.Comment), Timestamp: time.Now()}
 	r.ToBeNotified = append(r.ToBeNotified, event)
 

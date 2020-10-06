@@ -15,8 +15,9 @@ type Query {
 type Mutation {
     createComment(content: String!, references: Int):Comment!
     upvoteComment(comment: Int!):Comment!
+    deleteComment(comment: Int!):Comment!
 }
 
 type Subscription {
-    commentAdded: Comment!
+    commentChanged: Comment!
 }
