@@ -23,9 +23,32 @@
             ><i>Kommentar #{{ comment.id }}</i></span
           >
           <span>
-            <v-btn text v-on:click="deleteComment"
-              ><v-icon>mdi-delete</v-icon> Delete</v-btn
-            >
+            
+              <v-dialog v-model="dialog" persistent max-width="290">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn text v-bind="attrs" v-on="on"
+                    ><v-icon>mdi-delete</v-icon> Delete</v-btn
+                  ></template
+                >
+                <v-card>
+                  <v-card-title class="headline">
+                    Kommentar löschen?
+                  </v-card-title>
+                  <v-card-text>
+                    Möchtest du den Kommentar wirklich unwiderruflich löschen?</v-card-text
+                  >
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary darken-1" text @click="dialog = false">
+                      Nein
+                    </v-btn>
+                    <v-btn color="green darken-1" text @click="deleteComment">
+                      Ja
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            
             <v-btn text v-on:click="reply"
               ><v-icon>mdi-reply</v-icon> Reply</v-btn
             >
@@ -55,6 +78,7 @@ export default {
     comment: Object,
   },
   data: () => ({
+    dialog: false,
     renderConfig: {
       // Mermaid config
       mermaid: {
@@ -128,23 +152,22 @@ export default {
     deleteComment() {
       console.log(this.comment.id);
       //TODO:delete comment on server
-      this.$apollo
-        .mutate({
-          mutation: gql`
-            mutation($id: Int!) {
-              deleteComment(comment: $id) {
-                id
-                content
-                upvotes
-                timestamp
-                references
-              }
+      this.$apollo.mutate({
+        mutation: gql`
+          mutation($id: Int!) {
+            deleteComment(comment: $id) {
+              id
+              content
+              upvotes
+              timestamp
+              references
             }
-          `,
-          variables: {
-            id: this.comment.id,
-          },
-        });
+          }
+        `,
+        variables: {
+          id: this.comment.id,
+        },
+      });
     },
   },
 };
