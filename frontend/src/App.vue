@@ -210,6 +210,28 @@
                 </div>
               </v-tab-item>
             </v-tabs-items>
+            <v-row justify="space-between">
+              <span>
+                <v-chip
+                  v-if="currentReference"
+                  class="ma-2"
+                  close
+                  @click:close="currentReference = null"
+                >
+                  Bezieht sich auf Kommentar {{ this.currentReference }}
+                </v-chip>
+              </span>
+              <v-btn
+                v-on:click="senden"
+                text
+                depressed
+                :color="$vuetify.theme.dark ? 'white' : 'primary'"
+                style="margin-right: 10px"
+              >
+                Senden
+                <v-icon class="ml-2">mdi-send</v-icon>
+              </v-btn>
+            </v-row>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -255,7 +277,7 @@ export default {
       daysOffsetCounter: 0,
       tab: null,
       items: ["editor", "vorschau"],
-      comments: [],
+      // comments: [],
       text: "",
       renderConfig: {
         // Mermaid config
@@ -360,7 +382,7 @@ export default {
       subscribeToMore: {
         document: gql`
           subscription name {
-            commentAdded {
+            commentChanged {
               id
               content
               timestamp
@@ -372,15 +394,37 @@ export default {
         updateQuery: (previousResult, { subscriptionData }) => {
           if (previousResult == null) {
             return {
-              comments: [subscriptionData.data.commentAdded],
+              comments: [subscriptionData.data.commentChanged],
             };
           } else {
-            return {
-              comments: [
-                ...previousResult.comments,
-                subscriptionData.data.commentAdded,
-              ],
-            };
+            //Comment is in previousResults --> should be deleted
+            if (
+              previousResult.comments.some(
+                (c) => c.id === subscriptionData.data.commentChanged.id
+              )
+            ) {
+              const index = previousResult.comments.findIndex(
+                (c) => c.id === subscriptionData.data.commentChanged.id
+              );
+
+              if (index === -1) return previousResult;
+
+              // The previous result is immutable
+              const newResult = {
+                comments: [...previousResult.comments],
+              };
+              // Remove the question from the list
+              newResult.comments.splice(index, 1);
+              return newResult;
+            } else {
+              //Comment is NOT in previousResults --> should be added
+              return {
+                comments: [
+                  ...previousResult.comments,
+                  subscriptionData.data.commentChanged,
+                ],
+              };
+            }
           }
         },
       },
