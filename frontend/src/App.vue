@@ -94,7 +94,7 @@
 
             <v-tabs-items
               v-model="tab"
-              style="min-height: 275px; background-color:transparent;"
+              style="background-color:transparent;"
             >
               <v-tab-item v-for="item in items" :key="item">
                 <div v-if="item == 'vorschau'" style="padding: 16px">
