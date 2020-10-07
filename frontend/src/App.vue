@@ -256,6 +256,11 @@ export default {
           references: this.currentReference,
         },
       });
+      
+      //reset UI for next comment
+      this.text = '';
+      this.currentReference = null;
+
     },
     yesterday() {
       this.daysOffsetCounter = this.daysOffsetCounter - 1;
