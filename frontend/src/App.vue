@@ -171,7 +171,7 @@ import { Editor } from "vuetify-markdown-editor";
 import moment from "moment";
 import gql from "graphql-tag";
 import sha256 from "crypto-js/sha256";
-import Base64 from 'crypto-js/enc-base64';
+import Base64 from "crypto-js/enc-base64";
 
 const COMMENTS_QUERY = gql`
   query {
@@ -190,7 +190,6 @@ export default {
 
   components: {
     Comment,
-    // Day,
     Editor,
   },
 
@@ -204,7 +203,6 @@ export default {
       daysOffsetCounter: 0,
       tab: null,
       items: ["editor", "vorschau"],
-      // comments: [],
       text: "",
       renderConfig: {
         // Mermaid config
@@ -286,8 +284,9 @@ export default {
     login() {
       this.tribleClickCounter = this.tribleClickCounter + 1;
       if (this.tribleClickCounter >= 3) {
-        this.admin = Base64.stringify(sha256(prompt("Sesam öffne dich..."))) === "FkXyH+oqft+3ZpDNSPnlXIH5Dm8qNiLyC2s5ubL4nq4=";
-          
+        this.admin =
+          Base64.stringify(sha256(prompt("Sesam öffne dich..."))) ===
+          "FkXyH+oqft+3ZpDNSPnlXIH5Dm8qNiLyC2s5ubL4nq4=";
       }
     },
   },
