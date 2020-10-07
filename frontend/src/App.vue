@@ -62,13 +62,20 @@
 
     <v-main>
       <div v-if="!$apollo.loading" style="padding-bottom: 64px;">
-        <v-list color="secondary" v-bind:key="comment.id" v-for="comment in comments">
-          <Comment :comment="comment" @reply="reply"/>
+        <v-list
+          color="secondary"
+          v-bind:key="comment.id"
+          v-for="comment in comments"
+        >
+          <Comment :comment="comment" @reply="reply" />
         </v-list>
       </div>
       <div v-if="$apollo.loading">loading ....</div>
 
-      <v-expansion-panels v-model="panelOpened" style="position: fixed; bottom: 0px; width: 100vw">
+      <v-expansion-panels
+        v-model="panelOpened"
+        style="position: fixed; bottom: 0px; width: 100vw"
+      >
         <v-expansion-panel>
           <v-expansion-panel-header color="primary">
             <span class="text-h6" style="color: #f4f1ea;"
@@ -81,21 +88,52 @@
             </template>
           </v-expansion-panel-header>
           <v-expansion-panel-content color="secondary">
-            <v-tabs 
-              v-model="tab"
-              right
-              background-color="secondary"
-            >
-              <v-tabs-slider color="primary"></v-tabs-slider>
-              <v-tab :style="$vuetify.theme.dark ? 'color:white;' : 'color:rgba(0,0,0,0.54);'" v-for="item in items" :key="item">
-                {{ item }}
-              </v-tab>
-            </v-tabs>
+            <v-row>
+              <v-col cols="12" sm="4">
+                <span>
+                  <v-chip
+                    v-if="currentReference"
+                    class="ma-2"
+                    close
+                    @click:close="currentReference = null"
+                  >
+                    Bezieht sich auf Kommentar {{ this.currentReference }}
+                  </v-chip>
+                </span>
+              </v-col>
+              <v-col cols="12" sm="4">
+                <v-tabs v-model="tab" centered background-color="secondary">
+                  <v-tabs-slider color="primary"></v-tabs-slider>
+                  <v-tab
+                    :style="
+                      $vuetify.theme.dark
+                        ? 'color:white;'
+                        : 'color:rgba(0,0,0,0.54);'
+                    "
+                    v-for="item in items"
+                    :key="item"
+                  >
+                    {{ item }}
+                  </v-tab>
+                </v-tabs>
+              </v-col>
+              <v-col cols="12" sm="4">
+                <v-row justify="end" align="center" style="height:100%;">
+                  <v-btn
+                    v-on:click="senden"
+                    text
+                    depressed
+                    :color="$vuetify.theme.dark ? 'white' : 'primary'"
+                    style="margin-right: 10px"
+                  >
+                    Senden
+                    <v-icon class="ml-2">mdi-send</v-icon>
+                  </v-btn>
+                </v-row>
+              </v-col>
+            </v-row>
 
-            <v-tabs-items
-              v-model="tab"
-              style="background-color:transparent;"
-            >
+            <v-tabs-items v-model="tab" style="background-color:transparent;">
               <v-tab-item v-for="item in items" :key="item">
                 <div v-if="item == 'vorschau'" style="padding: 16px">
                   <v-card>
@@ -110,7 +148,7 @@
                     />
                   </v-card>
                 </div>
-                <div v-if="item == 'editor'">
+                <div v-if="item == 'editor'" style="margin-top: -16px">
                   <Editor
                     :outline="false"
                     mode="editor"
@@ -124,28 +162,6 @@
                 </div>
               </v-tab-item>
             </v-tabs-items>
-            <v-row justify="space-between">
-              <span>
-              <v-chip
-                v-if="currentReference"
-                class="ma-2"
-                close
-                @click:close="currentReference = null"
-              >
-                Bezieht sich auf Kommentar {{ this.currentReference }}
-              </v-chip>
-              </span>
-              <v-btn
-                v-on:click="senden"
-                text
-                depressed
-                :color="$vuetify.theme.dark ? 'white' : 'primary'"
-                style="margin-right: 10px"
-              >
-                Senden
-                <v-icon class="ml-2">mdi-send</v-icon>
-              </v-btn>
-            </v-row>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -257,12 +273,11 @@ export default {
           references: this.currentReference,
         },
       });
-      
+
       //reset UI for next comment
-      this.text = '';
+      this.text = "";
       this.currentReference = null;
       this.panelOpened = 1; //everything else than 0 works
-
     },
     yesterday() {
       this.daysOffsetCounter = this.daysOffsetCounter - 1;
@@ -327,5 +342,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
