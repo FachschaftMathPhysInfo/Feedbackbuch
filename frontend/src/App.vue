@@ -124,7 +124,10 @@
       </div>
       <div v-if="$apollo.loading">loading ....</div>
 
-      <v-expansion-panels v-model="panelOpened" style="position: fixed; bottom: 0px; width: 100vw">
+      <v-expansion-panels
+        v-model="panelOpened"
+        style="position: fixed; bottom: 0px; width: 100vw"
+      >
         <v-expansion-panel>
           <v-expansion-panel-header color="primary">
             <span class="text-h6" style="color: #f4f1ea;"
@@ -181,7 +184,6 @@
                 </v-row>
               </v-col>
             </v-row>
-
             <v-tabs-items v-model="tab" style="background-color:transparent;">
               <v-tab-item v-for="item in items" :key="item">
                 <div v-if="item == 'vorschau'" style="padding: 16px">
