@@ -68,7 +68,7 @@
       </div>
       <div v-if="$apollo.loading">loading ....</div>
 
-      <v-expansion-panels style="position: fixed; bottom: 0px; width: 100vw">
+      <v-expansion-panels v-model="panelOpened" style="position: fixed; bottom: 0px; width: 100vw">
         <v-expansion-panel>
           <v-expansion-panel-header color="primary">
             <span class="text-h6" style="color: #f4f1ea;"
@@ -183,6 +183,7 @@ export default {
 
   data() {
     return {
+      panelOpened: 1,
       currentReference: null,
       day: moment(new Date()),
       today: moment(new Date()),
@@ -260,6 +261,7 @@ export default {
       //reset UI for next comment
       this.text = '';
       this.currentReference = null;
+      this.panelOpened = 1; //everything else than 0 works
 
     },
     yesterday() {
