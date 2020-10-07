@@ -26,7 +26,7 @@
           >
           <span>
             
-              <v-dialog v-model="dialog" persistent max-width="290">
+              <v-dialog v-if="admin" v-model="dialog" persistent max-width="290">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn text v-bind="attrs" v-on="on"
                     ><v-icon>mdi-delete</v-icon> Delete</v-btn
@@ -78,6 +78,7 @@ export default {
   },
   props: {
     comment: Object,
+    admin: Boolean,
   },
   data: () => ({
     dialog: false,

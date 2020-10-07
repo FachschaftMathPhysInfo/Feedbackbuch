@@ -3,7 +3,11 @@
     <v-app-bar app color="primary" dark>
       <div class="d-flex align-center">
         <v-toolbar-title
-          ><v-icon class="mr-2">mdi-comment-quote</v-icon
+          ><v-icon
+            v-on:click="login"
+            class="mr-2"
+            :style="this.admin ? 'color:green;' : 'color:white;'"
+            >mdi-comment-quote</v-icon
           >Feedbackbuch</v-toolbar-title
         >
       </div>
@@ -115,7 +119,7 @@
           v-bind:key="comment.id"
           v-for="comment in comments"
         >
-          <Comment :comment="comment" @reply="reply" />
+          <Comment :comment="comment" :admin="admin" @reply="reply" />
         </v-list>
       </div>
       <div v-if="$apollo.loading">loading ....</div>
@@ -271,6 +275,8 @@ export default {
     return {
       sorting: 'time',
       panelOpened: 1,
+      admin: false,
+      tribleClickCounter: 0,
       currentReference: null,
       day: moment(new Date()),
       today: moment(new Date()),
@@ -373,6 +379,13 @@ export default {
         return b.upvotes - a.upvotes;
       });
     },
+    login() {
+      this.tribleClickCounter = this.tribleClickCounter + 1;
+      if (this.tribleClickCounter >= 3) {
+        this.admin =
+          prompt("Sesam öffne dich...") === "IchliebedieseFlachschaft";
+      }
+    },
   },
 
   apollo: {
@@ -416,11 +429,11 @@ export default {
               // Remove the comment from the list
               newResult.comments.splice(index, 1);
               // Remove references to this comment
-              newResult.comments.map(c => {
-                if(c.references === subscriptionData.data.commentChanged.id){
+              newResult.comments.map((c) => {
+                if (c.references === subscriptionData.data.commentChanged.id) {
                   c.references = -1;
                 }
-              })
+              });
               return newResult;
             } else {
               //Comment is NOT in previousResults --> should be added
