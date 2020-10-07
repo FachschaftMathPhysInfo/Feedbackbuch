@@ -3,9 +3,11 @@
     <v-card class="mx-max" style="width: 100vw; margin: 12px">
       <i v-if="comment.references" style="padding: 12px 12px;"
         >Bezieht sich auf
-        <a :href="'#' + comment.references"
+        <a v-if="comment.references>=0" :href="'#' + comment.references"
           >Kommentar #{{ comment.references }}</a
-        ></i
+        >
+        <span v-else>gelöschten Kommentar</span>
+        </i
       >
       <Editor
         mode="viewer"
