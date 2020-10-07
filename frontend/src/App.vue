@@ -316,8 +316,14 @@ export default {
               const newResult = {
                 comments: [...previousResult.comments],
               };
-              // Remove the question from the list
+              // Remove the comment from the list
               newResult.comments.splice(index, 1);
+              // Remove references to this comment
+              newResult.comments.map(c => {
+                if(c.references === subscriptionData.data.commentChanged.id){
+                  c.references = -1;
+                }
+              })
               return newResult;
             } else {
               //Comment is NOT in previousResults --> should be added

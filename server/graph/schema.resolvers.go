@@ -54,6 +54,11 @@ func (r *mutationResolver) DeleteComment(ctx context.Context, comment int) (*mod
 	r.DB.Where(&model.Comment{ID: comment}).First(&deletedComment)
 
 	if deletedComment.ID == comment {
+		//Updates all references, where deleted comment is referenced
+		deleted := -1
+		r.DB.Model(&model.Comment{}).Where(&model.Comment{References: &comment}).Updates(model.Comment{References: &deleted})
+
+		//Deletes original comment
 		r.DB.Delete(&deletedComment)
 
 		go func() {
