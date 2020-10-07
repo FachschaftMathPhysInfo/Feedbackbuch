@@ -37,6 +37,20 @@
             v-bind="attrs"
             v-on="on"
             text
+            href="https://mathphys.info/vorkurs/plan/"
+            target="_blank"
+          >
+            <v-icon>mdi-calendar</v-icon>
+          </v-btn>
+        </template>
+        <span>Vorkursplan</span>
+      </v-tooltip>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            v-on="on"
+            text
             v-on:click="$vuetify.theme.dark = !$vuetify.theme.dark"
           >
             <v-icon>mdi-theme-light-dark</v-icon>
