@@ -19,7 +19,7 @@
           </template>
           <span>zu vorherigem Tag wechseln</span>
         </v-tooltip>
-        {{ day | dateString }}
+        Seite vom {{ day | dateString }}
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn v-bind="attrs" v-on="on" v-on:click="tomorrow()" icon
