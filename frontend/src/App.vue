@@ -31,6 +31,40 @@
       </span>
 
       <v-spacer></v-spacer>
+      <v-btn-toggle borderless dense light v-model="sorting">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              value="time"
+              v-bind="attrs"
+              v-on="on"
+              v-on:click="sortByTime"
+            >
+              <v-icon left class="ml-2">
+                mdi-sort-clock-ascending-outline
+              </v-icon>
+              <span class="hidden-sm-and-down">Time</span>
+            </v-btn>
+          </template>
+          <span>Chronologisch sortieren</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              value="votes"
+              v-bind="attrs"
+              v-on="on"
+              v-on:click="sortByUpvotes"
+            >
+              <v-icon left class="ml-2">
+                mdi-sort-bool-ascending
+              </v-icon>
+              <span class="hidden-sm-and-down">Votes</span>
+            </v-btn>
+          </template>
+          <span>nach Votes sortieren</span>
+        </v-tooltip>
+      </v-btn-toggle>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -213,6 +247,7 @@ export default {
 
   data() {
     return {
+      sorting: 'time',
       panelOpened: 1,
       currentReference: null,
       day: moment(new Date()),
@@ -303,6 +338,18 @@ export default {
     },
     reply(commentid) {
       this.currentReference = commentid;
+    },
+    sortByTime() {
+      console.log("Sort by time");
+      console.log(this.comments[0]);
+      this.comments = this.comments.sort((a, b) => {
+        return moment(a.timestamp) > moment(b.timestamp);
+      });
+    },
+    sortByUpvotes() {
+      this.comments = this.comments.sort((a, b) => {
+        return b.upvotes - a.upvotes;
+      });
     },
   },
 
