@@ -309,7 +309,15 @@ export default {
     // this.$refs.editor.focus();
     // this.$refs.editor.upload();
     // Dark theme
-    // this.$vuetify.theme.dark = true;
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    // dark mode
+      this.$vuetify.theme.dark = true;
+    }
+    
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      this.$vuetify.theme.dark = e.matches;
+    });
+    // 
   },
   filters: {
     dateString: function(now) {
