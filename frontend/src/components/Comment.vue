@@ -1,7 +1,14 @@
 <template>
   <v-list-item>
     <v-card class="mx-max" style="width: 100vw; margin: 12px">
-     <i v-if="comment.references" style="padding: 12px 12px;">Bezieht sich auf <a :href="'#'+comment.references">Kommentar #{{comment.references}}</a></i>
+      <i v-if="comment.references" style="padding: 12px 12px;"
+        >Bezieht sich auf
+        <a v-if="comment.references>=0" :href="'#' + comment.references"
+          >Kommentar #{{ comment.references }}</a
+        >
+        <span v-else>gelöschten Kommentar</span>
+        </i
+      >
       <Editor
         mode="viewer"
         ref="editor"
@@ -14,15 +21,45 @@
       />
       <v-card-actions>
         <v-row justify="space-between" style="padding: 0px 12px;">
-          <span><i>Kommentar #{{comment.id}}</i></span>
-          <span>
-          <v-btn text v-on:click="reply"><v-icon>mdi-reply</v-icon> Reply</v-btn>
-          <v-btn text v-on:click="upvote">
-            <v-icon class="mr-1" :color="upvoted ? 'green' : 'gray'"
-              >mdi-thumb-up</v-icon
-            >
-            Upvote {{ this.comment.upvotes }}</v-btn
+          <span
+            ><i>Kommentar #{{ comment.id }}</i></span
           >
+          <span>
+            
+              <v-dialog v-if="admin" v-model="dialog" persistent max-width="290">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn text v-bind="attrs" v-on="on"
+                    ><v-icon>mdi-delete</v-icon> Delete</v-btn
+                  ></template
+                >
+                <v-card>
+                  <v-card-title class="headline">
+                    Kommentar löschen?
+                  </v-card-title>
+                  <v-card-text>
+                    Möchtest du den Kommentar wirklich unwiderruflich löschen?</v-card-text
+                  >
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary darken-1" text @click="dialog = false">
+                      Nein
+                    </v-btn>
+                    <v-btn color="green darken-1" text @click="deleteComment">
+                      Ja
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            
+            <v-btn text v-on:click="reply"
+              ><v-icon>mdi-reply</v-icon> Reply</v-btn
+            >
+            <v-btn text v-on:click="upvote">
+              <v-icon class="mr-1" :color="upvoted ? 'green' : 'gray'"
+                >mdi-thumb-up</v-icon
+              >
+              Upvote {{ this.comment.upvotes }}</v-btn
+            >
           </span>
         </v-row>
       </v-card-actions>
@@ -41,8 +78,10 @@ export default {
   },
   props: {
     comment: Object,
+    admin: Boolean,
   },
   data: () => ({
+    dialog: false,
     renderConfig: {
       // Mermaid config
       mermaid: {
@@ -111,9 +150,29 @@ export default {
         .then(() => (this.upvoted = true));
     },
     reply() {
-      this.$emit('reply',this.comment.id);
-    }
-  }
+      this.$emit("reply", this.comment.id);
+    },
+    deleteComment() {
+      console.log(this.comment.id);
+      //TODO:delete comment on server
+      this.$apollo.mutate({
+        mutation: gql`
+          mutation($id: Int!) {
+            deleteComment(comment: $id) {
+              id
+              content
+              upvotes
+              timestamp
+              references
+            }
+          }
+        `,
+        variables: {
+          id: this.comment.id,
+        },
+      });
+    },
+  },
 };
 </script>
 

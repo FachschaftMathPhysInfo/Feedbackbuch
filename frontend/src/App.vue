@@ -3,7 +3,11 @@
     <v-app-bar app color="primary" dark>
       <div class="d-flex align-center">
         <v-toolbar-title
-          ><v-icon class="mr-2">mdi-comment-quote</v-icon
+          ><v-icon
+            v-on:click="login"
+            class="mr-2"
+            :style="this.admin ? 'color:green;' : 'color:white;'"
+            >mdi-comment-quote</v-icon
           >Feedbackbuch</v-toolbar-title
         >
       </div>
@@ -62,8 +66,12 @@
 
     <v-main>
       <div v-if="!$apollo.loading" style="padding-bottom: 64px;">
-        <v-list color="secondary" v-bind:key="comment.id" v-for="comment in comments">
-          <Comment :comment="comment" @reply="reply"/>
+        <v-list
+          color="secondary"
+          v-bind:key="comment.id"
+          v-for="comment in comments"
+        >
+          <Comment :comment="comment" :admin="admin" @reply="reply" />
         </v-list>
       </div>
       <div v-if="$apollo.loading">loading ....</div>
@@ -81,13 +89,17 @@
             </template>
           </v-expansion-panel-header>
           <v-expansion-panel-content color="secondary">
-            <v-tabs 
-              v-model="tab"
-              right
-              background-color="secondary"
-            >
+            <v-tabs v-model="tab" right background-color="secondary">
               <v-tabs-slider color="primary"></v-tabs-slider>
-              <v-tab :style="$vuetify.theme.dark ? 'color:white;' : 'color:rgba(0,0,0,0.54);'" v-for="item in items" :key="item">
+              <v-tab
+                :style="
+                  $vuetify.theme.dark
+                    ? 'color:white;'
+                    : 'color:rgba(0,0,0,0.54);'
+                "
+                v-for="item in items"
+                :key="item"
+              >
                 {{ item }}
               </v-tab>
             </v-tabs>
@@ -126,14 +138,14 @@
             </v-tabs-items>
             <v-row justify="space-between">
               <span>
-              <v-chip
-                v-if="currentReference"
-                class="ma-2"
-                close
-                @click:close="currentReference = null"
-              >
-                Bezieht sich auf Kommentar {{ this.currentReference }}
-              </v-chip>
+                <v-chip
+                  v-if="currentReference"
+                  class="ma-2"
+                  close
+                  @click:close="currentReference = null"
+                >
+                  Bezieht sich auf Kommentar {{ this.currentReference }}
+                </v-chip>
               </span>
               <v-btn
                 v-on:click="senden"
@@ -155,10 +167,11 @@
 
 <script>
 import Comment from "./components/Comment";
-// import Day from "./components/Day";
 import { Editor } from "vuetify-markdown-editor";
 import moment from "moment";
 import gql from "graphql-tag";
+import sha256 from "crypto-js/sha256";
+import Base64 from "crypto-js/enc-base64";
 
 const COMMENTS_QUERY = gql`
   query {
@@ -177,19 +190,19 @@ export default {
 
   components: {
     Comment,
-    // Day,
     Editor,
   },
 
   data() {
     return {
+      admin: false,
+      tribleClickCounter: 0,
       currentReference: null,
       day: moment(new Date()),
       today: moment(new Date()),
       daysOffsetCounter: 0,
       tab: null,
       items: ["editor", "vorschau"],
-      comments: [],
       text: "",
       renderConfig: {
         // Mermaid config
@@ -268,6 +281,14 @@ export default {
     reply(commentid) {
       this.currentReference = commentid;
     },
+    login() {
+      this.tribleClickCounter = this.tribleClickCounter + 1;
+      if (this.tribleClickCounter >= 3) {
+        this.admin =
+          Base64.stringify(sha256(prompt("Sesam öffne dich..."))) ===
+          "FkXyH+oqft+3ZpDNSPnlXIH5Dm8qNiLyC2s5ubL4nq4=";
+      }
+    },
   },
 
   apollo: {
@@ -277,7 +298,7 @@ export default {
       subscribeToMore: {
         document: gql`
           subscription name {
-            commentAdded {
+            commentChanged {
               id
               content
               timestamp
@@ -289,15 +310,43 @@ export default {
         updateQuery: (previousResult, { subscriptionData }) => {
           if (previousResult == null) {
             return {
-              comments: [subscriptionData.data.commentAdded],
+              comments: [subscriptionData.data.commentChanged],
             };
           } else {
-            return {
-              comments: [
-                ...previousResult.comments,
-                subscriptionData.data.commentAdded,
-              ],
-            };
+            //Comment is in previousResults --> should be deleted
+            if (
+              previousResult.comments.some(
+                (c) => c.id === subscriptionData.data.commentChanged.id
+              )
+            ) {
+              const index = previousResult.comments.findIndex(
+                (c) => c.id === subscriptionData.data.commentChanged.id
+              );
+
+              if (index === -1) return previousResult;
+
+              // The previous result is immutable
+              const newResult = {
+                comments: [...previousResult.comments],
+              };
+              // Remove the comment from the list
+              newResult.comments.splice(index, 1);
+              // Remove references to this comment
+              newResult.comments.map((c) => {
+                if (c.references === subscriptionData.data.commentChanged.id) {
+                  c.references = -1;
+                }
+              });
+              return newResult;
+            } else {
+              //Comment is NOT in previousResults --> should be added
+              return {
+                comments: [
+                  ...previousResult.comments,
+                  subscriptionData.data.commentChanged,
+                ],
+              };
+            }
           }
         },
       },
@@ -320,5 +369,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

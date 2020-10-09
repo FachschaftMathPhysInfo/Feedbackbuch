@@ -55,6 +55,7 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		CreateComment func(childComplexity int, content string, references *int) int
+		DeleteComment func(childComplexity int, comment int) int
 		UpvoteComment func(childComplexity int, comment int) int
 	}
 
@@ -63,19 +64,20 @@ type ComplexityRoot struct {
 	}
 
 	Subscription struct {
-		CommentAdded func(childComplexity int) int
+		CommentChanged func(childComplexity int) int
 	}
 }
 
 type MutationResolver interface {
 	CreateComment(ctx context.Context, content string, references *int) (*model.Comment, error)
 	UpvoteComment(ctx context.Context, comment int) (*model.Comment, error)
+	DeleteComment(ctx context.Context, comment int) (*model.Comment, error)
 }
 type QueryResolver interface {
 	Comments(ctx context.Context) ([]*model.Comment, error)
 }
 type SubscriptionResolver interface {
-	CommentAdded(ctx context.Context) (<-chan *model.Comment, error)
+	CommentChanged(ctx context.Context) (<-chan *model.Comment, error)
 }
 
 type executableSchema struct {
@@ -140,6 +142,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateComment(childComplexity, args["content"].(string), args["references"].(*int)), true
 
+	case "Mutation.deleteComment":
+		if e.complexity.Mutation.DeleteComment == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteComment_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteComment(childComplexity, args["comment"].(int)), true
+
 	case "Mutation.upvoteComment":
 		if e.complexity.Mutation.UpvoteComment == nil {
 			break
@@ -159,12 +173,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Comments(childComplexity), true
 
-	case "Subscription.commentAdded":
-		if e.complexity.Subscription.CommentAdded == nil {
+	case "Subscription.commentChanged":
+		if e.complexity.Subscription.CommentChanged == nil {
 			break
 		}
 
-		return e.complexity.Subscription.CommentAdded(childComplexity), true
+		return e.complexity.Subscription.CommentChanged(childComplexity), true
 
 	}
 	return 0, false
@@ -264,10 +278,11 @@ type Query {
 type Mutation {
     createComment(content: String!, references: Int):Comment!
     upvoteComment(comment: Int!):Comment!
+    deleteComment(comment: Int!):Comment!
 }
 
 type Subscription {
-    commentAdded: Comment!
+    commentChanged: Comment!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -297,6 +312,21 @@ func (ec *executionContext) field_Mutation_createComment_args(ctx context.Contex
 		}
 	}
 	args["references"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteComment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["comment"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("comment"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["comment"] = arg0
 	return args, nil
 }
 
@@ -624,6 +654,48 @@ func (ec *executionContext) _Mutation_upvoteComment(ctx context.Context, field g
 	return ec.marshalNComment2ᚖgithubᚗcomᚋTomTomRixRixᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_deleteComment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteComment_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteComment(rctx, args["comment"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Comment)
+	fc.Result = res
+	return ec.marshalNComment2ᚖgithubᚗcomᚋTomTomRixRixᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query_comments(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -727,7 +799,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Subscription_commentAdded(ctx context.Context, field graphql.CollectedField) (ret func() graphql.Marshaler) {
+func (ec *executionContext) _Subscription_commentChanged(ctx context.Context, field graphql.CollectedField) (ret func() graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -745,7 +817,7 @@ func (ec *executionContext) _Subscription_commentAdded(ctx context.Context, fiel
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Subscription().CommentAdded(rctx)
+		return ec.resolvers.Subscription().CommentChanged(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1936,6 +2008,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "deleteComment":
+			out.Values[i] = ec._Mutation_deleteComment(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2001,8 +2078,8 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 	}
 
 	switch fields[0].Name {
-	case "commentAdded":
-		return ec._Subscription_commentAdded(ctx, fields[0])
+	case "commentChanged":
+		return ec._Subscription_commentChanged(ctx, fields[0])
 	default:
 		panic("unknown field " + strconv.Quote(fields[0].Name))
 	}
