@@ -334,6 +334,7 @@ export default {
     },
     reply(commentid) {
       this.currentReference = commentid;
+      this.panelOpened = 0; //everything else than 0 works
     },
     sortByTime() {
       this.comments = this.comments.sort((a, b) => {
@@ -436,7 +437,6 @@ export default {
         this.$vuetify.theme.dark = e.matches;
       });
     //
-
   },
   filters: {
     dateString: function (now) {
