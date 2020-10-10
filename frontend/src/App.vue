@@ -462,6 +462,7 @@ export default {
         this.$vuetify.theme.dark = e.matches;
       });
     //
+
   },
   filters: {
     dateString: function (now) {

@@ -4,3 +4,4 @@ docker-compose.yml
 .git
 .dockerignore
 server
+**/dist

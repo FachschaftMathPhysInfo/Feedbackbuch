@@ -14,6 +14,9 @@ import (
 
 func (r *mutationResolver) CreateComment(ctx context.Context, content string, references *int) (*model.Comment, error) {
 	comment := model.Comment{Content: content, Timestamp: time.Now(), References: references}
+	if comment.Content == "" {
+		return nil, fmt.Errorf("comment cannot be empty")
+	}
 	result := r.DB.Create(&comment)
 	if result.Error != nil {
 		return nil, result.Error
@@ -68,7 +71,8 @@ func (r *mutationResolver) DeleteComment(ctx context.Context, comment int) (*mod
 				if c.Timestamp.Before(time.Now().Add(-20 * time.Minute)) {
 					toBeDeleted = append(toBeDeleted, i)
 				}
-				c.C <- &deletedComment
+				//BUG(tomtomrixrix): should not be sent to everyone.
+				//c.C <- &deletedComment
 			}
 			for i := range toBeDeleted {
 				index := len(toBeDeleted) - 1 + i
