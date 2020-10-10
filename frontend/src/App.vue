@@ -23,7 +23,7 @@
           </template>
           <span>zu vorherigem Tag wechseln</span>
         </v-tooltip>
-        {{ day | dateString }}
+        Seite vom {{ day | dateString }}
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn v-bind="attrs" v-on="on" v-on:click="tomorrow()" icon
@@ -35,6 +35,52 @@
       </span>
 
       <v-spacer></v-spacer>
+      <v-btn-toggle borderless dense light v-model="sorting">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              value="time"
+              v-bind="attrs"
+              v-on="on"
+              v-on:click="sortByTime"
+            >
+              <v-icon left class="ml-2">
+                mdi-sort-clock-ascending-outline
+              </v-icon>
+              <span class="hidden-sm-and-down">Time</span>
+            </v-btn>
+          </template>
+          <span>Chronologisch sortieren</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              value="votes"
+              v-bind="attrs"
+              v-on="on"
+              v-on:click="sortByUpvotes"
+            >
+              <v-icon left class="ml-2"> mdi-sort-bool-ascending </v-icon>
+              <span class="hidden-sm-and-down">Votes</span>
+            </v-btn>
+          </template>
+          <span>nach Votes sortieren</span>
+        </v-tooltip>
+      </v-btn-toggle>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            v-on="on"
+            text
+            href="https://mathphys.info/vorkurs/plan/"
+            target="_blank"
+          >
+            <v-icon>mdi-calendar</v-icon>
+          </v-btn>
+        </template>
+        <span>Vorkursplan</span>
+      </v-tooltip>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -76,38 +122,36 @@
       </div>
       <div v-if="$apollo.loading">loading ....</div>
 
-      <v-expansion-panels style="position: sticky; bottom: 0px; width: 100vw">
+      <v-expansion-panels v-model="panelOpened" style="position: sticky; bottom: 0px; width: 100vw">
         <v-expansion-panel>
           <v-expansion-panel-header color="primary">
-            <span class="text-h6" style="color: #f4f1ea;"
+            <span class="text-h6" style="color: #f4f1ea"
               >Neues Feedback hinzufügen</span
             >
             <template v-slot:actions>
-              <v-icon style="color: #f4f1ea;">
-                mdi-menu-up
-              </v-icon>
+              <v-icon style="color: #f4f1ea"> mdi-menu-up </v-icon>
             </template>
           </v-expansion-panel-header>
           <v-expansion-panel-content color="secondary">
-            <v-tabs v-model="tab" right background-color="secondary">
-              <v-tabs-slider color="primary"></v-tabs-slider>
-              <v-tab
-                :style="
-                  $vuetify.theme.dark
-                    ? 'color:white;'
-                    : 'color:rgba(0,0,0,0.54);'
-                "
-                v-for="item in items"
-                :key="item"
-              >
-                {{ item }}
-              </v-tab>
-            </v-tabs>
-
-            <v-tabs-items
-              v-model="tab"
-              style="min-height: 275px; background-color:transparent;"
-            >
+            <v-row>
+              <v-col>
+                <v-tabs v-model="tab" centered background-color="secondary">
+                  <v-tabs-slider color="primary"></v-tabs-slider>
+                  <v-tab
+                    :style="
+                      $vuetify.theme.dark
+                        ? 'color:white;'
+                        : 'color:rgba(0,0,0,0.54);'
+                    "
+                    v-for="item in items"
+                    :key="item"
+                  >
+                    {{ item }}
+                  </v-tab>
+                </v-tabs>
+              </v-col>
+            </v-row>
+            <v-tabs-items v-model="tab" style="background-color: transparent">
               <v-tab-item v-for="item in items" :key="item">
                 <div v-if="item == 'vorschau'" style="padding: 16px">
                   <v-card>
@@ -122,7 +166,7 @@
                     />
                   </v-card>
                 </div>
-                <div v-if="item == 'editor'">
+                <div v-if="item == 'editor'" style="margin-top: -16px">
                   <Editor
                     :outline="false"
                     mode="editor"
@@ -195,8 +239,10 @@ export default {
 
   data() {
     return {
+      panelOpened: 1,
       admin: false,
       tribleClickCounter: 0,
+      sorting: "time",
       currentReference: null,
       day: moment(new Date()),
       today: moment(new Date()),
@@ -269,6 +315,11 @@ export default {
           references: this.currentReference,
         },
       });
+
+      //reset UI for next comment
+      this.text = "";
+      this.currentReference = null;
+      this.panelOpened = 1; //everything else than 0 works
     },
     yesterday() {
       this.daysOffsetCounter = this.daysOffsetCounter - 1;
@@ -280,6 +331,17 @@ export default {
     },
     reply(commentid) {
       this.currentReference = commentid;
+      this.panelOpened = 0; //everything else than 0 works
+    },
+    sortByTime() {
+      this.comments = this.comments.sort((a, b) => {
+        return moment(a.timestamp) > moment(b.timestamp);
+      });
+    },
+    sortByUpvotes() {
+      this.comments = this.comments.sort((a, b) => {
+        return b.upvotes - a.upvotes;
+      });
     },
     login() {
       this.tribleClickCounter = this.tribleClickCounter + 1;
@@ -358,18 +420,23 @@ export default {
     // this.$refs.editor.focus();
     // this.$refs.editor.upload();
     // Dark theme
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    // dark mode
+    if (
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+      // dark mode
       this.$vuetify.theme.dark = true;
     }
-    
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-      this.$vuetify.theme.dark = e.matches;
-    });
-    // 
+
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        this.$vuetify.theme.dark = e.matches;
+      });
+    //
   },
   filters: {
-    dateString: function(now) {
+    dateString: function (now) {
       now.locale("de");
       return now.format("LL");
     },

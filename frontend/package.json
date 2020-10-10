@@ -22,6 +22,7 @@
     "markdown-it-highlightjs": "^3.3.0",
     "markdown-it-texmath": "^0.8.0",
     "moment": "^2.29.0",
+    "typeface-roboto": "^1.1.13",
     "vue": "^2.6.11",
     "vue-apollo": "^3.0.0-beta.11",
     "vuetify": "^2.2.11",
