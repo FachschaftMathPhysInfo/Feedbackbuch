@@ -65,7 +65,7 @@
     </v-app-bar>
 
     <v-main>
-      <div v-if="!$apollo.loading" style="padding-bottom: 64px;">
+      <div v-if="!$apollo.loading" >
         <v-list
           color="secondary"
           v-bind:key="comment.id"
@@ -76,7 +76,7 @@
       </div>
       <div v-if="$apollo.loading">loading ....</div>
 
-      <v-expansion-panels style="position: fixed; bottom: 0px; width: 100vw">
+      <v-expansion-panels style="position: sticky; bottom: 0px; width: 100vw">
         <v-expansion-panel>
           <v-expansion-panel-header color="primary">
             <span class="text-h6" style="color: #f4f1ea;"
