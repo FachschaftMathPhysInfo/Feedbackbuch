@@ -272,12 +272,10 @@ export default {
 
   data() {
     return {
-      sorting: 'time',
       panelOpened: 1,
       admin: false,
       tribleClickCounter: 0,
       sorting: 'time',
-      panelOpened: 1,
       currentReference: null,
       day: moment(new Date()),
       today: moment(new Date()),
@@ -368,8 +366,6 @@ export default {
       this.currentReference = commentid;
     },
     sortByTime() {
-      console.log("Sort by time");
-      console.log(this.comments[0]);
       this.comments = this.comments.sort((a, b) => {
         return moment(a.timestamp) > moment(b.timestamp);
       });
@@ -386,18 +382,6 @@ export default {
           Base64.stringify(sha256(prompt("Sesam öffne dich..."))) ===
           "FkXyH+oqft+3ZpDNSPnlXIH5Dm8qNiLyC2s5ubL4nq4=";
       }
-    },
-    sortByTime() {
-      console.log("Sort by time");
-      console.log(this.comments[0]);
-      this.comments = this.comments.sort((a, b) => {
-        return moment(a.timestamp) > moment(b.timestamp);
-      });
-    },
-    sortByUpvotes() {
-      this.comments = this.comments.sort((a, b) => {
-        return b.upvotes - a.upvotes;
-      });
     },
   },
 
