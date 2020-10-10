@@ -137,19 +137,7 @@
           </v-expansion-panel-header>
           <v-expansion-panel-content color="secondary">
             <v-row>
-              <v-col cols="12" sm="4">
-                <span>
-                  <v-chip
-                    v-if="currentReference"
-                    class="ma-2"
-                    close
-                    @click:close="currentReference = null"
-                  >
-                    Bezieht sich auf Kommentar {{ this.currentReference }}
-                  </v-chip>
-                </span>
-              </v-col>
-              <v-col cols="12" sm="4">
+              <v-col>
                 <v-tabs v-model="tab" centered background-color="secondary">
                   <v-tabs-slider color="primary"></v-tabs-slider>
                   <v-tab
@@ -164,20 +152,6 @@
                     {{ item }}
                   </v-tab>
                 </v-tabs>
-              </v-col>
-              <v-col cols="12" sm="4">
-                <v-row justify="end" align="center" style="height: 100%">
-                  <v-btn
-                    v-on:click="senden"
-                    text
-                    depressed
-                    :color="$vuetify.theme.dark ? 'white' : 'primary'"
-                    style="margin-right: 10px"
-                  >
-                    Senden
-                    <v-icon class="ml-2">mdi-send</v-icon>
-                  </v-btn>
-                </v-row>
               </v-col>
             </v-row>
             <v-tabs-items v-model="tab" style="background-color: transparent">
