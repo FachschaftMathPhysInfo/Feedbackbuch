@@ -3,6 +3,8 @@ import App from './App.vue'
 import vuetify from './plugins/vuetify';
 import 'emoji-mart-vue-fast/css/emoji-mart.css';
 import { createProvider } from './vue-apollo'
+// Load Roboto typeface
+require('typeface-roboto')
 
 Vue.config.productionTip = false
 
