@@ -60,9 +60,7 @@
               v-on="on"
               v-on:click="sortByUpvotes"
             >
-              <v-icon left class="ml-2">
-                mdi-sort-bool-ascending
-              </v-icon>
+              <v-icon left class="ml-2"> mdi-sort-bool-ascending </v-icon>
               <span class="hidden-sm-and-down">Votes</span>
             </v-btn>
           </template>
@@ -113,7 +111,7 @@
     </v-app-bar>
 
     <v-main>
-      <div v-if="!$apollo.loading" style="padding-bottom: 64px;">
+      <div v-if="!$apollo.loading" style="padding-bottom: 64px">
         <v-list
           color="secondary"
           v-bind:key="comment.id"
@@ -130,13 +128,11 @@
       >
         <v-expansion-panel>
           <v-expansion-panel-header color="primary">
-            <span class="text-h6" style="color: #f4f1ea;"
+            <span class="text-h6" style="color: #f4f1ea"
               >Neues Feedback hinzufügen</span
             >
             <template v-slot:actions>
-              <v-icon style="color: #f4f1ea;">
-                mdi-menu-up
-              </v-icon>
+              <v-icon style="color: #f4f1ea"> mdi-menu-up </v-icon>
             </template>
           </v-expansion-panel-header>
           <v-expansion-panel-content color="secondary">
@@ -170,7 +166,7 @@
                 </v-tabs>
               </v-col>
               <v-col cols="12" sm="4">
-                <v-row justify="end" align="center" style="height:100%;">
+                <v-row justify="end" align="center" style="height: 100%">
                   <v-btn
                     v-on:click="senden"
                     text
@@ -184,7 +180,7 @@
                 </v-row>
               </v-col>
             </v-row>
-            <v-tabs-items v-model="tab" style="background-color:transparent;">
+            <v-tabs-items v-model="tab" style="background-color: transparent">
               <v-tab-item v-for="item in items" :key="item">
                 <div v-if="item == 'vorschau'" style="padding: 16px">
                   <v-card>
@@ -275,7 +271,7 @@ export default {
       panelOpened: 1,
       admin: false,
       tribleClickCounter: 0,
-      sorting: 'time',
+      sorting: "time",
       currentReference: null,
       day: moment(new Date()),
       today: moment(new Date()),
@@ -452,18 +448,23 @@ export default {
     // this.$refs.editor.focus();
     // this.$refs.editor.upload();
     // Dark theme
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    // dark mode
+    if (
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+      // dark mode
       this.$vuetify.theme.dark = true;
     }
-    
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-      this.$vuetify.theme.dark = e.matches;
-    });
-    // 
+
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) => {
+        this.$vuetify.theme.dark = e.matches;
+      });
+    //
   },
   filters: {
-    dateString: function(now) {
+    dateString: function (now) {
       now.locale("de");
       return now.format("LL");
     },
