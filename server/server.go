@@ -15,14 +15,26 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/gorilla/websocket"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/rs/cors"
 )
 
 func initDB() *gorm.DB {
-	db, err := gorm.Open("sqlite3", "testdb.sqlite3")
-	if err != nil {
-		os.Exit(1)
+	databaseConnectionType := "postgres"
+	databaseConnectionString := os.Getenv("DB_CONNECTION_STRING")
+
+	log.Println(databaseConnectionString)
+
+	if databaseConnectionString == "" {
+		databaseConnectionString = "test3.sqlite"
+	}
+	err := fmt.Errorf("initial connect failed")
+
+	db, err := gorm.Open(databaseConnectionType, databaseConnectionString)
+	for err != nil {
+		db, err = gorm.Open(databaseConnectionType, databaseConnectionString)
+		time.Sleep(500 * time.Millisecond)
+		log.Println(err)
 	}
 
 	db.AutoMigrate(&model.Comment{})
