@@ -23,10 +23,11 @@ func initDB() *gorm.DB {
 	databaseConnectionType := "postgres"
 	databaseConnectionString := os.Getenv("DB_CONNECTION_STRING")
 
-	log.Println(databaseConnectionString)
-
-	if databaseConnectionString == "" {
-		databaseConnectionString = "test3.sqlite"
+	if databaseConnectionString != "" {
+		log.Println(databaseConnectionString)
+	} else {
+		log.Println("DB_CONNECTION_STRING empty!")
+		os.Exit(1)
 	}
 	err := fmt.Errorf("initial connect failed")
 
