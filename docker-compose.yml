@@ -2,6 +2,29 @@
 version: '3.0'
 
 services:
+  feedbackbuch-db:
+    image: postgres:13.0
+    environment:
+      POSTGRES_PASSWORD: randomtest1
+      POSTGRES_USER: feedbackbuch
+      POSTGRES_DB: feedbackbuch
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - internal
+
+  feedbackbuch-backend:
+    build: server
+    image: "feedbackbuch-backend:latest"
+    ports:
+      - "127.0.0.1:8081:8081"
+    env_file:
+      - server/feedbackbuch-backend.env
+    networks:
+      - internal
+    depends_on:
+      - feedbackbuch-db
+
   feedbackbuch-frontend:
     build: frontend
     image: "feedbackbuch-frontend:latest"
@@ -13,10 +36,8 @@ services:
     depends_on:
       - feedbackbuch-backend
 
-  feedbackbuch-backend:
-    build: server
-    image: "feedbackbuch-backend:latest"
-    ports:
-      - "127.0.0.1:8081:8081"
-    environment:
-      PORT: 8081
+networks:
+  internal: {}
+
+volumes:
+  db: {}
