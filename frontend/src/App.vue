@@ -136,8 +136,16 @@
             </template>
           </v-expansion-panel-header>
           <v-expansion-panel-content color="secondary">
-            <v-row>
-              <v-col>
+            <v-row align="center">
+              <v-col cols="12" sm="4">
+                <v-tooltip right>
+                  <template v-slot:activator="{ on, attrs }">
+                    <span v-bind="attrs" v-on="on"><v-icon>mdi-information</v-icon> Nettiquette</span>
+                  </template>
+                  <span>Bitte bedenke, dass das Feedback annonym, jedoch trotzdem öffentlich einsehbar ist. Überlege dir also gut, wie du dein Feedback formulierst. Bitte sei respektvoll und beleidige niemanden, ein toleranter Umgangston und konstruktive Kritik eingen sich am ehesten, um Veränderungen anzustoßen.</span>
+                </v-tooltip>
+              </v-col>
+              <v-col cols="12" sm="4">
                 <v-tabs v-model="tab" centered background-color="secondary">
                   <v-tabs-slider color="primary"></v-tabs-slider>
                   <v-tab
