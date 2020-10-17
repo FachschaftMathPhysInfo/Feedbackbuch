@@ -94,7 +94,7 @@ export default {
         engine: require("katex"),
         katexOptions: {
           macros: { "\\RR": "\\mathbb{R}" },
-          output: "mathml", // formula delimiters
+          output: "html", // formula delimiters
           delimiters: [
             {
               left: "$$$",
