@@ -9,10 +9,10 @@ Vue.use(VueApollo)
 const AUTH_TOKEN = 'apollo-token'
 
 // Http endpoint
-const httpEndpoint = process.env.VUE_APP_GRAPHQL_HTTP || 'http://localhost:8081/query'
+const httpEndpoint = SERVER_HTTP || 'http://localhost:8081/query'
 
 // ws endpoint
-const wsEndpoint = process.env.VUE_APP_GRAPHQL_WS || 'ws://localhost:8081/query'
+const wsEndpoint = SERVER_WS || 'ws://localhost:8081/query'
 
 // Config
 const defaultOptions = {

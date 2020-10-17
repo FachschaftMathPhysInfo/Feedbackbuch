@@ -26,13 +26,14 @@ services:
       - feedbackbuch-db
 
   feedbackbuch-frontend:
-    build: frontend
+    build: 
+      context: frontend
+      args: 
+        SERVER_HTTP: http://localhost:8081/query
+        SERVER_WS: ws://localhost:8081/query
     image: "feedbackbuch-frontend:latest"
     ports:
       - "127.0.0.1:8080:80"
-    environment:
-      VUE_APP_GRAPHQL_HTTP: http://localhost:8081/query
-      VUE_APP_GRAPHQL_WS: ws://localhost:8081/query
     depends_on:
       - feedbackbuch-backend
 
