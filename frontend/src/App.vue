@@ -142,7 +142,7 @@
                   <template v-slot:activator="{ on, attrs }">
                     <span v-bind="attrs" v-on="on"><v-icon>mdi-information</v-icon> Nettiquette</span>
                   </template>
-                  <span>Bitte bedenke, dass das Feedback annonym, jedoch trotzdem öffentlich einsehbar ist. Überlege dir also gut, wie du dein Feedback formulierst. Bitte sei respektvoll und beleidige niemanden, ein toleranter Umgangston und konstruktive Kritik eingen sich am ehesten, um Veränderungen anzustoßen.</span>
+                  <span>Bitte bedenke, dass das Feedback anonym, jedoch trotzdem öffentlich einsehbar ist. Überlege dir also gut, wie du dein Feedback formulierst. Bitte sei respektvoll und beleidige niemanden, ein toleranter Umgangston und konstruktive Kritik eingen sich am ehesten, um Veränderungen anzustoßen.</span>
                 </v-tooltip>
               </v-col>
               <v-col cols="12" sm="4">
