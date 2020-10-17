@@ -17,7 +17,7 @@
       <span>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs" v-on="on" v-on:click="yesterday()" icon
+            <v-btn :disabled="disableYesterday"  v-bind="attrs" v-on="on" v-on:click="yesterday()" icon
               ><v-icon>mdi-menu-left</v-icon>
             </v-btn>
           </template>
@@ -26,7 +26,7 @@
         Seite vom {{ day | dateString }}
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs" v-on="on" v-on:click="tomorrow()" icon
+            <v-btn :disabled="disableTomorrow" v-bind="attrs" v-on="on" v-on:click="tomorrow()" icon
               ><v-icon>mdi-menu-right</v-icon>
             </v-btn>
           </template>
@@ -110,19 +110,22 @@
       </v-tooltip>
     </v-app-bar>
 
-    <v-main>
+    <v-main class="secondary">
       <div v-if="!$apollo.loading" >
+        <v-card v-if="todays(comments).length === 0" elevation="12" style="margin: 12px; padding: 12px; text-align:center">
+          <h2>Es liegt (noch) kein Feedback für diesen Tag vor.<br>
+        Wir würden uns aber über dein Feedback freuen 😀</h2></v-card> 
         <v-list
           color="secondary"
           v-bind:key="comment.id"
-          v-for="comment in comments"
+          v-for="comment in todays(comments)"
         >
           <Comment :comment="comment" :admin="admin" @reply="reply" />
         </v-list>
       </div>
       <div v-if="$apollo.loading">loading ....</div>
 
-      <v-expansion-panels v-model="panelOpened" style="position: sticky; bottom: 0px; width: 100vw">
+      <v-expansion-panels v-model="panelOpened" style="position: fixed; bottom: 0px; width: 100vw">
         <v-expansion-panel>
           <v-expansion-panel-header color="primary">
             <span class="text-h6" style="color: #f4f1ea"
@@ -239,6 +242,7 @@ export default {
 
   data() {
     return {
+      disableTomorrow: true,
       panelOpened: 1,
       admin: false,
       tribleClickCounter: 0,
@@ -328,6 +332,16 @@ export default {
     tomorrow() {
       this.daysOffsetCounter = this.daysOffsetCounter + 1;
       this.day = moment(this.today).add(this.daysOffsetCounter, "days"); //.format('LL');
+    },
+    todays(comments){
+      //man soll nicht in die Zukunft blättern können
+      this.disableTomorrow = !moment(this.day).isBefore(this.today);
+
+      //man soll nicht weiter zurück als der erste Kommentar können
+      this.disableYesterday = this.comments.every(comment => moment(comment.timestamp).isAfter(moment(this.day).subtract(1,'days'), 'day'));
+      
+      //zeige nur die Kommentare des aktuell ausgewählten Tages
+      return comments.filter(comment => moment(comment.timestamp).isSame(this.day, 'day'));
     },
     reply(commentid) {
       this.currentReference = commentid;
