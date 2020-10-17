@@ -120,7 +120,7 @@
           v-bind:key="comment.id"
           v-for="comment in todays(comments)"
         >
-          <Comment :comment="comment" :admin="admin" @reply="reply" />
+          <Comment :id="'comment-'+comment.id" :highlighted="highlightedCommentID === comment.id" :comment="comment" :admin="admin" @reply="reply" @jumpToComment="jumpToComment"/>
         </v-list>
       </div>
       <div v-if="$apollo.loading">loading ....</div>
@@ -242,6 +242,7 @@ export default {
 
   data() {
     return {
+      highlightedCommentID: 0,
       disableTomorrow: true,
       panelOpened: 1,
       admin: false,
@@ -346,6 +347,17 @@ export default {
     reply(commentid) {
       this.currentReference = commentid;
       this.panelOpened = 0; //everything else than 0 works
+    },
+    jumpToComment(referenceID){
+      if(this.comments){
+        this.day = moment(this.comments.filter(comment => comment.id === referenceID)[0].timestamp);
+        this.daysOffsetCounter = this.day.diff(this.today,'days');
+        if( document.getElementById("comment-"+referenceID)){
+          document.getElementById("comment-"+referenceID).scrollIntoView();
+        }
+        this.highlightedCommentID = referenceID;
+      }
+      
     },
     sortByTime() {
       this.comments = this.comments.sort((a, b) => {
