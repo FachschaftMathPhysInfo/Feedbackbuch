@@ -17,7 +17,7 @@
       <span>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs" v-on="on" v-on:click="yesterday()" icon
+            <v-btn :disabled="disableYesterday"  v-bind="attrs" v-on="on" v-on:click="yesterday()" icon
               ><v-icon>mdi-menu-left</v-icon>
             </v-btn>
           </template>
@@ -26,7 +26,7 @@
         Seite vom {{ day | dateString }}
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs" v-on="on" v-on:click="tomorrow()" icon
+            <v-btn :disabled="disableTomorrow" v-bind="attrs" v-on="on" v-on:click="tomorrow()" icon
               ><v-icon>mdi-menu-right</v-icon>
             </v-btn>
           </template>
@@ -110,19 +110,22 @@
       </v-tooltip>
     </v-app-bar>
 
-    <v-main>
+    <v-main class="secondary">
       <div v-if="!$apollo.loading" >
+        <v-card v-if="todays(comments).length === 0" elevation="12" style="margin: 12px; padding: 12px; text-align:center">
+          <h2>Es liegt (noch) kein Feedback für diesen Tag vor.<br>
+        Wir würden uns aber über dein Feedback freuen 😀</h2></v-card> 
         <v-list
           color="secondary"
           v-bind:key="comment.id"
-          v-for="comment in comments"
+          v-for="comment in todays(comments)"
         >
-          <Comment :comment="comment" :admin="admin" @reply="reply" />
+          <Comment :id="'comment-'+comment.id" :highlighted="highlightedCommentID === comment.id" :comment="comment" :admin="admin" @reply="reply" @jumpToComment="jumpToComment"/>
         </v-list>
       </div>
       <div v-if="$apollo.loading">loading ....</div>
 
-      <v-expansion-panels v-model="panelOpened" style="position: sticky; bottom: 0px; width: 100vw">
+      <v-expansion-panels v-model="panelOpened" style="position: fixed; bottom: 0px; width: 100vw">
         <v-expansion-panel>
           <v-expansion-panel-header color="primary">
             <span class="text-h6" style="color: #f4f1ea"
@@ -133,8 +136,16 @@
             </template>
           </v-expansion-panel-header>
           <v-expansion-panel-content color="secondary">
-            <v-row>
-              <v-col>
+            <v-row align="center">
+              <v-col cols="12" sm="4">
+                <v-tooltip right>
+                  <template v-slot:activator="{ on, attrs }">
+                    <span v-bind="attrs" v-on="on"><v-icon>mdi-information</v-icon> Nettiquette</span>
+                  </template>
+                  <span>Bitte bedenke, dass das Feedback annonym, jedoch trotzdem öffentlich einsehbar ist. Überlege dir also gut, wie du dein Feedback formulierst. Bitte sei respektvoll und beleidige niemanden, ein toleranter Umgangston und konstruktive Kritik eingen sich am ehesten, um Veränderungen anzustoßen.</span>
+                </v-tooltip>
+              </v-col>
+              <v-col cols="12" sm="4">
                 <v-tabs v-model="tab" centered background-color="secondary">
                   <v-tabs-slider color="primary"></v-tabs-slider>
                   <v-tab
@@ -239,6 +250,8 @@ export default {
 
   data() {
     return {
+      highlightedCommentID: 0,
+      disableTomorrow: true,
       panelOpened: 1,
       admin: false,
       tribleClickCounter: 0,
@@ -329,9 +342,30 @@ export default {
       this.daysOffsetCounter = this.daysOffsetCounter + 1;
       this.day = moment(this.today).add(this.daysOffsetCounter, "days"); //.format('LL');
     },
+    todays(comments){
+      //man soll nicht in die Zukunft blättern können
+      this.disableTomorrow = !moment(this.day).isBefore(this.today);
+
+      //man soll nicht weiter zurück als der erste Kommentar können
+      this.disableYesterday = this.comments.every(comment => moment(comment.timestamp).isAfter(moment(this.day).subtract(1,'days'), 'day'));
+      
+      //zeige nur die Kommentare des aktuell ausgewählten Tages
+      return comments.filter(comment => moment(comment.timestamp).isSame(this.day, 'day'));
+    },
     reply(commentid) {
       this.currentReference = commentid;
       this.panelOpened = 0; //everything else than 0 works
+    },
+    jumpToComment(referenceID){
+      if(this.comments){
+        this.day = moment(this.comments.filter(comment => comment.id === referenceID)[0].timestamp);
+        this.daysOffsetCounter = this.day.diff(this.today,'days');
+        if( document.getElementById("comment-"+referenceID)){
+          document.getElementById("comment-"+referenceID).scrollIntoView();
+        }
+        this.highlightedCommentID = referenceID;
+      }
+      
     },
     sortByTime() {
       this.comments = this.comments.sort((a, b) => {

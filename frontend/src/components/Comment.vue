@@ -1,9 +1,9 @@
 <template>
   <v-list-item>
-    <v-card class="mx-max" style="width: 100vw; margin: 12px">
+    <v-card :elevation="highlighted ? 10 : 2" class="mx-max" style="width: 100vw; margin: 12px">
       <i v-if="comment.references" style="padding: 12px 12px;"
-        >Bezieht sich auf
-        <a v-if="comment.references>=0" :href="'#' + comment.references"
+        >Bezieht sich auf 
+        <a v-if="comment.references>=0"  v-on:click="jumpToComment(comment.references)" :href="'#' + comment.references"
           >Kommentar #{{ comment.references }}</a
         >
         <span v-else>gelöschten Kommentar</span>
@@ -22,7 +22,7 @@
       <v-card-actions>
         <v-row justify="space-between" style="padding: 0px 12px;">
           <span
-            ><i>Kommentar #{{ comment.id }}</i></span
+            ><i :style="highlighted ? {fontWeight: 'bold'} : ''">Kommentar #{{ comment.id }}</i></span
           >
           <span>
             
@@ -79,6 +79,7 @@ export default {
   props: {
     comment: Object,
     admin: Boolean,
+    highlighted: Boolean,
   },
   data: () => ({
     dialog: false,
@@ -151,6 +152,9 @@ export default {
     },
     reply() {
       this.$emit("reply", this.comment.id);
+    },
+    jumpToComment(referenceID){
+      this.$emit("jumpToComment", referenceID);
     },
     deleteComment() {
       console.log(this.comment.id);
