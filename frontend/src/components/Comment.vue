@@ -1,14 +1,16 @@
 <template>
   <v-list-item>
     <v-card :elevation="highlighted ? 10 : 2" class="mx-max" style="width: 100vw; margin: 12px">
-      <i v-if="comment.references" style="padding: 12px 12px;"
-        >Bezieht sich auf 
-        <a v-if="comment.references>=0"  v-on:click="jumpToComment(comment.references)" :href="'#' + comment.references"
-          >Kommentar #{{ comment.references }}</a
+      <div class="pt-2 pl-2">
+        <v-chip v-if="comment.references" label
+          ><v-icon class="mr-1">mdi-reply</v-icon>
+          <a class="" v-if="comment.references>=0"  v-on:click="jumpToComment(comment.references)" :href="'#' + comment.references" :style=" $vuetify.theme.dark ? 'color:white;' : '' "
+            >Kommentar #{{ comment.references }}</a
+          >
+          <span v-else>gelöschter Kommentar</span>
+        </v-chip
         >
-        <span v-else>gelöschten Kommentar</span>
-        </i
-      >
+      </div>
       <Editor
         mode="viewer"
         ref="editor"
@@ -22,7 +24,7 @@
       <v-card-actions>
         <v-row justify="space-between" style="padding: 0px 12px;">
           <span
-            ><i :style="highlighted ? {fontWeight: 'bold'} : ''">Kommentar #{{ comment.id }}</i></span
+            ><v-chip :style="highlighted ? {fontWeight: 'bold'} : ''">Kommentar #{{ comment.id }}</v-chip></span
           >
           <span>
             
