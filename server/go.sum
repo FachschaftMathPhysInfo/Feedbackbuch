@@ -2,6 +2,9 @@ github.com/99designs/gqlgen v0.13.0 h1:haLTcUp3Vwp80xMVEg5KRNwzfUrgFdRmtBY8fuB8s
 github.com/99designs/gqlgen v0.13.0/go.mod h1:NV130r6f4tpRWuAI+zsrSdooO/eWUv+Gyyoi3rEfXIk=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/PuerkitoBio/goquery v1.5.1/go.mod h1:GsLWisAFVj4WgDibEWF4pvYnkVQBpKBKeU+7zCJoLcc=
+github.com/TomTomRixRix/Feedbackbuch v0.0.0-20201017225946-82a99efc00ae h1:UvosHGY3F/QCjlp8j5Tz4kTWa2lFLuhobxrKRteCJFY=
+github.com/TomTomRixRix/Feedbackbuch/server v0.0.0-20201017225946-82a99efc00ae h1:9rekVOewliS1QDyXRnyaD8Vf4j01XFLr2G4xjR5pJo0=
+github.com/TomTomRixRix/Feedbackbuch/server v0.0.0-20201017225946-82a99efc00ae/go.mod h1:gnXLTxahMv791a1HZpW3Kp36Cyk84/F095Dwhwr7I30=
 github.com/agnivade/levenshtein v1.0.1/go.mod h1:CURSv5d9Uaml+FovSIICkLbAUZ9S4RqaHDIsdSBg7lM=
 github.com/agnivade/levenshtein v1.0.3 h1:M5ZnqLOoZR8ygVq0FfkXsNOKzMCk0xRiow0R5+5VkQ0=
 github.com/agnivade/levenshtein v1.0.3/go.mod h1:4SFRZbbXWLF4MU1T9Qg0pGgH3Pjs+t6ie5efyrwRJXs=

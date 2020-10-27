@@ -99,7 +99,7 @@
           <v-btn
             v-bind="attrs"
             v-on="on"
-            href="https://github.com/TomTomRixRix/Feedbackbuch"
+            href="https://github.com/FachschaftMathPhysInfo/Feedbackbuch/"
             target="_blank"
             text
           >
