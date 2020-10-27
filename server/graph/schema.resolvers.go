@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/TomTomRixRix/Feedbackbuch/server/graph/generated"
-	"github.com/TomTomRixRix/Feedbackbuch/server/graph/model"
+	"github.com/FachschaftMathPhysInfo/Feedbackbuch/server/graph/generated"
+	"github.com/FachschaftMathPhysInfo/Feedbackbuch/server/graph/model"
 )
 
 func (r *mutationResolver) CreateComment(ctx context.Context, content string, references *int) (*model.Comment, error) {

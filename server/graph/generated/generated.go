@@ -13,7 +13,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/TomTomRixRix/Feedbackbuch/server/graph/model"
+	"github.com/FachschaftMathPhysInfo/Feedbackbuch/server/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -609,7 +609,7 @@ func (ec *executionContext) _Mutation_createComment(ctx context.Context, field g
 	}
 	res := resTmp.(*model.Comment)
 	fc.Result = res
-	return ec.marshalNComment2ᚖgithubᚗcomᚋTomTomRixRixᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
+	return ec.marshalNComment2ᚖgithubᚗcomᚋFachschaftMathPhysInfoᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_upvoteComment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -651,7 +651,7 @@ func (ec *executionContext) _Mutation_upvoteComment(ctx context.Context, field g
 	}
 	res := resTmp.(*model.Comment)
 	fc.Result = res
-	return ec.marshalNComment2ᚖgithubᚗcomᚋTomTomRixRixᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
+	return ec.marshalNComment2ᚖgithubᚗcomᚋFachschaftMathPhysInfoᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteComment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -693,7 +693,7 @@ func (ec *executionContext) _Mutation_deleteComment(ctx context.Context, field g
 	}
 	res := resTmp.(*model.Comment)
 	fc.Result = res
-	return ec.marshalNComment2ᚖgithubᚗcomᚋTomTomRixRixᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
+	return ec.marshalNComment2ᚖgithubᚗcomᚋFachschaftMathPhysInfoᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_comments(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -725,7 +725,7 @@ func (ec *executionContext) _Query_comments(ctx context.Context, field graphql.C
 	}
 	res := resTmp.([]*model.Comment)
 	fc.Result = res
-	return ec.marshalOComment2ᚕᚖgithubᚗcomᚋTomTomRixRixᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
+	return ec.marshalOComment2ᚕᚖgithubᚗcomᚋFachschaftMathPhysInfoᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -838,7 +838,7 @@ func (ec *executionContext) _Subscription_commentChanged(ctx context.Context, fi
 			w.Write([]byte{'{'})
 			graphql.MarshalString(field.Alias).MarshalGQL(w)
 			w.Write([]byte{':'})
-			ec.marshalNComment2ᚖgithubᚗcomᚋTomTomRixRixᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx, field.Selections, res).MarshalGQL(w)
+			ec.marshalNComment2ᚖgithubᚗcomᚋFachschaftMathPhysInfoᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx, field.Selections, res).MarshalGQL(w)
 			w.Write([]byte{'}'})
 		})
 	}
@@ -2345,11 +2345,11 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNComment2githubᚗcomᚋTomTomRixRixᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v model.Comment) graphql.Marshaler {
+func (ec *executionContext) marshalNComment2githubᚗcomᚋFachschaftMathPhysInfoᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v model.Comment) graphql.Marshaler {
 	return ec._Comment(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNComment2ᚖgithubᚗcomᚋTomTomRixRixᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v *model.Comment) graphql.Marshaler {
+func (ec *executionContext) marshalNComment2ᚖgithubᚗcomᚋFachschaftMathPhysInfoᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v *model.Comment) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -2657,7 +2657,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return graphql.MarshalBoolean(*v)
 }
 
-func (ec *executionContext) marshalOComment2ᚕᚖgithubᚗcomᚋTomTomRixRixᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v []*model.Comment) graphql.Marshaler {
+func (ec *executionContext) marshalOComment2ᚕᚖgithubᚗcomᚋFachschaftMathPhysInfoᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v []*model.Comment) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -2684,7 +2684,7 @@ func (ec *executionContext) marshalOComment2ᚕᚖgithubᚗcomᚋTomTomRixRixᚋ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOComment2ᚖgithubᚗcomᚋTomTomRixRixᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx, sel, v[i])
+			ret[i] = ec.marshalOComment2ᚖgithubᚗcomᚋFachschaftMathPhysInfoᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -2697,7 +2697,7 @@ func (ec *executionContext) marshalOComment2ᚕᚖgithubᚗcomᚋTomTomRixRixᚋ
 	return ret
 }
 
-func (ec *executionContext) marshalOComment2ᚖgithubᚗcomᚋTomTomRixRixᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v *model.Comment) graphql.Marshaler {
+func (ec *executionContext) marshalOComment2ᚖgithubᚗcomᚋFachschaftMathPhysInfoᚋFeedbackbuchᚋserverᚋgraphᚋmodelᚐComment(ctx context.Context, sel ast.SelectionSet, v *model.Comment) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

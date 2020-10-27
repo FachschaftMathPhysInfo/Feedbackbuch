@@ -4,7 +4,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/TomTomRixRix/Feedbackbuch/server/graph/model"
+	"github.com/FachschaftMathPhysInfo/Feedbackbuch/server/graph/model"
 	"github.com/jinzhu/gorm"
 )
 
