@@ -1,4 +1,4 @@
-FROM golang:1.16 AS feedbackbuch-backend-build-stage
+FROM golang:1.20 AS feedbackbuch-backend-build-stage
 WORKDIR /go/src
 COPY graph ./graph
 COPY go.mod .

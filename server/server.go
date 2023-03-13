@@ -9,9 +9,9 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
-	"github.com/TomTomRixRix/Feedbackbuch/server/graph"
-	"github.com/TomTomRixRix/Feedbackbuch/server/graph/generated"
-	"github.com/TomTomRixRix/Feedbackbuch/server/graph/model"
+	"github.com/FachschaftMathPhysInfo/Feedbackbuch/server/graph"
+	"github.com/FachschaftMathPhysInfo/Feedbackbuch/server/graph/generated"
+	"github.com/FachschaftMathPhysInfo/Feedbackbuch/server/graph/model"
 	"github.com/go-chi/chi"
 	"github.com/gorilla/websocket"
 	"github.com/jinzhu/gorm"
